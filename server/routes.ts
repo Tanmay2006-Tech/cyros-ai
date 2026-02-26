@@ -1,16 +1,187 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Server } from "http";
 import { storage } from "./storage";
+import { api } from "@shared/routes";
+import { z } from "zod";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+});
+
+// Helper for seeding the mock user and initial data if not exists
+async function ensureSeedData() {
+  const user = await storage.getUser(1);
+  if (!user) {
+    const { db } = await import('./db');
+    const { users } = await import('@shared/schema');
+    await db.insert(users).values({
+      id: 1,
+      username: "mock_user",
+      password: "password123", // dummy
+      age: 28,
+      weight: 75,
+      height: 175,
+      goal: "maintain",
+      activityLevel: "moderate"
+    });
+
+    await storage.createPlan({
+      userId: 1,
+      dietPlan: "Sample Diet Plan: Focus on lean proteins, whole grains, and healthy fats. Ensure you are well hydrated.",
+      workoutPlan: "Sample Workout Plan: 3 days of strength training, 2 days of cardio.",
+      targetCalories: 2400,
+      targetProtein: 160,
+      targetCarbs: 250,
+      targetFat: 80
+    });
+
+    await storage.createMeal({
+      userId: 1,
+      name: "Morning Oatmeal",
+      calories: 350,
+      protein: 15,
+      carbs: 60,
+      fat: 8
+    });
+  }
+}
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  
+  await ensureSeedData();
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.get(api.users.me.path, async (req, res) => {
+    const user = await storage.getUser(1);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  });
+
+  app.put(api.users.update.path, async (req, res) => {
+    try {
+      const input = api.users.update.input.parse(req.body);
+      const user = await storage.updateUser(1, input);
+      res.json(user);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post(api.plans.generate.path, async (req, res) => {
+    try {
+      const user = await storage.getUser(1);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const prompt = `
+        You are an expert AI Diet & Fitness Planner.
+        Create a personalized plan for a user with the following details:
+        Age: ${user.age}
+        Weight: ${user.weight} kg
+        Height: ${user.height} cm
+        Goal: ${user.goal}
+        Activity Level: ${user.activityLevel}
+
+        Respond ONLY with a JSON object in this exact format, no markdown tags:
+        {
+          "dietPlan": "Detailed text describing the diet strategy and suggested meals.",
+          "workoutPlan": "Detailed text describing the workout routine and schedule.",
+          "targetCalories": 2000,
+          "targetProtein": 150,
+          "targetCarbs": 200,
+          "targetFat": 65
+        }
+      `;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-5.1",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+      });
+
+      const content = response.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error("No response from AI");
+      }
+
+      const generatedData = JSON.parse(content);
+
+      const plan = await storage.createPlan({
+        userId: 1,
+        dietPlan: generatedData.dietPlan,
+        workoutPlan: generatedData.workoutPlan,
+        targetCalories: generatedData.targetCalories,
+        targetProtein: generatedData.targetProtein,
+        targetCarbs: generatedData.targetCarbs,
+        targetFat: generatedData.targetFat,
+      });
+
+      res.status(201).json(plan);
+
+    } catch (error) {
+      console.error("AI Generation Error:", error);
+      res.status(500).json({ message: "Failed to generate plan" });
+    }
+  });
+
+  app.get(api.plans.latest.path, async (req, res) => {
+    const plan = await storage.getLatestPlan(1);
+    if (!plan) {
+      return res.status(404).json({ message: 'No plan found' });
+    }
+    res.json(plan);
+  });
+
+  app.get(api.meals.list.path, async (req, res) => {
+    const meals = await storage.getMeals(1);
+    res.json(meals);
+  });
+
+  app.post(api.meals.create.path, async (req, res) => {
+    try {
+      const bodySchema = api.meals.create.input.extend({
+        calories: z.coerce.number(),
+        protein: z.coerce.number(),
+        carbs: z.coerce.number(),
+        fat: z.coerce.number(),
+      });
+
+      const input = bodySchema.parse(req.body);
+      
+      const meal = await storage.createMeal({
+        ...input,
+        userId: 1,
+      });
+
+      res.status(201).json(meal);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({
+          message: err.errors[0].message,
+          field: err.errors[0].path.join('.'),
+        });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.delete(api.meals.delete.path, async (req, res) => {
+    await storage.deleteMeal(Number(req.params.id));
+    res.status(204).send();
+  });
 
   return httpServer;
 }
