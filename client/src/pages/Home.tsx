@@ -116,7 +116,7 @@ export default function Home() {
             <Link href="/profile" className="block">
               <div className="glass-card rounded-[2rem] p-8 h-full hover:border-accent/30 transition-all duration-300 group cursor-pointer">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <User className="w-6 h-6 text-accent" />
+                  <Activity className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-foreground mb-2">Health Profile</h3>
                 <p className="text-muted-foreground leading-relaxed">
