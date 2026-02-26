@@ -2,7 +2,7 @@ import { useLatestPlan } from "@/hooks/use-plans";
 import { useMeals } from "@/hooks/use-meals";
 import { useUser } from "@/hooks/use-users";
 import { Link } from "wouter";
-import { Flame, Target, ArrowRight, Activity, Plus } from "lucide-react";
+import { Flame, Target, ArrowRight, Activity, Plus, User as UserIcon } from "lucide-react";
 import { HealthRing } from "@/components/HealthRing";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Layout } from "@/components/Layout";
@@ -116,7 +116,7 @@ export default function Home() {
             <Link href="/profile" className="block">
               <div className="glass-card rounded-[2rem] p-8 h-full hover:border-accent/30 transition-all duration-300 group cursor-pointer">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Activity className="w-6 h-6 text-accent" />
+                  <UserIcon className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="text-xl font-display font-bold text-foreground mb-2">Health Profile</h3>
                 <p className="text-muted-foreground leading-relaxed">
