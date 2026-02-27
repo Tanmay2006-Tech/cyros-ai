@@ -20,7 +20,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary via-emerald-400 to-secondary flex items-center justify-center shadow-lg shadow-primary/20 animate-pulse">
             <Activity className="text-primary-foreground w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-display font-bold tracking-tight text-foreground">FitAI</h1>
+          <h1 className="text-2xl font-display font-bold tracking-tight text-foreground">Cyros AI</h1>
         </div>
         
         <div className="space-y-2 flex-1">
