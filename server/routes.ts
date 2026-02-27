@@ -95,10 +95,12 @@ export async function registerRoutes(
         Goal: ${user.goal}
         Activity Level: ${user.activityLevel}
 
+        Today's Date: ${new Date().toISOString().split('T')[0]}
+
         Respond ONLY with a JSON object in this exact format, no markdown tags:
         {
-          "dietPlan": "Detailed text describing the diet strategy and suggested meals.",
-          "workoutPlan": "Detailed text describing the workout routine and schedule.",
+          "dietPlan": "Detailed text describing the diet strategy and suggested meals. Make it specific to the user's metrics.",
+          "workoutPlan": "Detailed text describing the workout routine and schedule. Make it specific to the user's metrics.",
           "targetCalories": 2000,
           "targetProtein": 150,
           "targetCarbs": 200,
@@ -146,7 +148,9 @@ export async function registerRoutes(
   });
 
   app.get(api.meals.list.path, async (req, res) => {
-    const meals = await storage.getMeals(1);
+    const user = await storage.getUser(1);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    const meals = await storage.getMeals(user.id);
     res.json(meals);
   });
 
