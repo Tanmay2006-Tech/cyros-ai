@@ -75,38 +75,42 @@ export default function Nutrition() {
       </header>
 
       {isFormOpen && (
-        <form onSubmit={handleAddMeal} className="glass-card rounded-[2rem] p-6 md:p-8 mb-8 animate-in slide-in-from-top-4 duration-300 border border-primary/30 shadow-lg shadow-primary/5">
-          <h3 className="text-xl font-display font-bold mb-6 text-foreground flex items-center gap-2">
-            <Apple className="text-primary" /> Add New Entry
+        <form onSubmit={handleAddMeal} className="glass-card rounded-[2rem] p-6 md:p-8 mb-8 animate-in slide-in-from-top-4 duration-300 border border-primary/30 shadow-2xl shadow-primary/10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -z-10" />
+          <h3 className="text-xl font-display font-bold mb-6 text-foreground flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Apple className="text-primary w-5 h-5" />
+            </div>
+            Log New Entry
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="lg:col-span-2">
-              <label className="text-xs text-muted-foreground font-semibold uppercase ml-1">Meal Name</label>
-              <input name="name" required placeholder="e.g. Chicken Salad" className="w-full mt-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div className="lg:col-span-2 space-y-1.5">
+              <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider ml-1">Meal Name</label>
+              <input name="name" required placeholder="e.g. Chicken Salad" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all" />
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground font-semibold uppercase ml-1">Calories</label>
-              <input name="calories" type="number" required placeholder="0" className="w-full mt-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider ml-1">Calories</label>
+              <input name="calories" type="number" required placeholder="0" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all" />
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground font-semibold uppercase ml-1">Protein (g)</label>
-              <input name="protein" type="number" required placeholder="0" className="w-full mt-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider ml-1">Protein (g)</label>
+              <input name="protein" type="number" required placeholder="0" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all" />
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground font-semibold uppercase ml-1">Carbs (g)</label>
-              <input name="carbs" type="number" required placeholder="0" className="w-full mt-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider ml-1">Carbs (g)</label>
+              <input name="carbs" type="number" required placeholder="0" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all" />
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground font-semibold uppercase ml-1">Fat (g)</label>
-              <input name="fat" type="number" required placeholder="0" className="w-full mt-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-xs text-muted-foreground font-bold uppercase tracking-wider ml-1">Fat (g)</label>
+              <input name="fat" type="number" required placeholder="0" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all" />
             </div>
           </div>
           <button 
             type="submit" 
             disabled={createMutation.isPending}
-            className="w-full mt-6 bg-primary text-primary-foreground py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition-colors flex justify-center items-center gap-2"
+            className="w-full mt-8 bg-primary text-primary-foreground py-5 rounded-2xl font-bold shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all flex justify-center items-center gap-2 disabled:opacity-50"
           >
-            {createMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Entry"}
+            {createMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Entry"}
           </button>
         </form>
       )}

@@ -38,11 +38,18 @@ export default function Home() {
 
   return (
     <Layout>
-      <header className="mb-10 mt-2">
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-2">
-          {user?.username ? `Hello, ${user.username}` : 'Welcome back'}
-        </h1>
-        <p className="text-muted-foreground text-lg">Here's your daily health summary.</p>
+      <header className="mb-10 mt-2 flex justify-between items-start">
+        <div>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-2 tracking-tight">
+            {user?.username ? `Hello, ${user.username}` : 'Welcome back'}
+          </h1>
+          <p className="text-muted-foreground text-lg font-medium opacity-80">Here's your daily health summary.</p>
+        </div>
+        <div className="hidden md:block">
+          <div className="bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold border border-primary/20">
+            PROTOTYPE MODE
+          </div>
+        </div>
       </header>
 
       {!plan ? (

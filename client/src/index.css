@@ -51,14 +51,18 @@
 
 @layer utilities {
   .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/50;
+    @apply bg-card/60 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-black/50 transition-all duration-500;
+  }
+
+  .glass-card:hover {
+    @apply border-primary/30 bg-card/80;
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/50;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/40;
   }
   
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-emerald-400 to-secondary;
   }
 }
