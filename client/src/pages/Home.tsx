@@ -40,14 +40,14 @@ export default function Home() {
     <Layout>
       <header className="mb-10 mt-2 flex justify-between items-start">
         <div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold text-gradient mb-2 tracking-tight">
-            {user?.username ? `Hello, ${user.username}` : 'Welcome back'}
+          <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-2 tracking-tighter italic uppercase">
+            {user?.username ? `YO, ${user.username}` : 'WAKE UP'}
           </h1>
-          <p className="text-muted-foreground text-lg font-medium opacity-80">Here's your daily health summary.</p>
+          <p className="text-primary font-bold tracking-widest text-sm uppercase opacity-90 border-l-2 border-primary pl-4">System Status: Optimized // Level 4 Project</p>
         </div>
         <div className="hidden md:block">
-          <div className="bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold border border-primary/20">
-            PROTOTYPE MODE
+          <div className="bg-primary/20 text-primary px-6 py-2 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] tracking-tighter">
+            HACKATHON EDITION v1.0
           </div>
         </div>
       </header>
