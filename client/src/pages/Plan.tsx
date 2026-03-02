@@ -1,7 +1,11 @@
 import { useLatestPlan } from "@/hooks/use-plans";
 import { Layout } from "@/components/Layout";
-import { Dumbbell, Utensils, Target, ArrowRight } from "lucide-react";
+import { Dumbbell, Utensils, Target, ArrowRight, Flame, Zap, Droplets, Info } from "lucide-react";
 import { Link } from "wouter";
+import { MacroStats } from "@/components/plan/MacroStats";
+import { DayCard } from "@/components/plan/DayCard";
+import { AccordionSection } from "@/components/plan/AccordionSection";
+import { motion } from "framer-motion";
 
 export default function Plan() {
   const { data: plan, isLoading } = useLatestPlan();
@@ -12,7 +16,7 @@ export default function Plan() {
         <div className="animate-pulse space-y-6 mt-4">
           <div className="h-10 bg-white/5 rounded-lg w-48 mb-8"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            {[1,2,3,4].map(i => <div key={i} className="h-24 glass-card rounded-2xl"></div>)}
+            {[1, 2, 3, 4].map(i => <div key={i} className="h-24 glass-card rounded-2xl"></div>)}
           </div>
           <div className="glass-card p-8 rounded-3xl h-64"></div>
           <div className="glass-card p-8 rounded-3xl h-64"></div>
@@ -38,69 +42,119 @@ export default function Plan() {
     );
   }
 
+  // Helper to parse the plan text into days
+  const parsePlan = (workoutText: string, dietText: string) => {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const parsedDays = days.map(day => {
+      // Find workout for the day
+      const workoutRegex = new RegExp(`${day}:?\\s*([\\s\\S]*?)(?=(?:${days.join('|')})|$)`, 'i');
+      const workoutMatch = workoutText.match(workoutRegex);
+      
+      // Determine day type
+      let type = 'Strength';
+      if (workoutText.toLowerCase().includes(`${day.toLowerCase()}: rest`) || 
+          workoutText.toLowerCase().includes(`${day.toLowerCase()} - rest`)) {
+        type = 'Rest Day';
+      } else if (workoutText.toLowerCase().includes('cardio') && workoutText.toLowerCase().includes(day.toLowerCase())) {
+        type = 'Cardio';
+      }
+
+      return {
+        day,
+        type,
+        workout: workoutMatch ? workoutMatch[1].trim() : "Standard routine",
+        diet: "See daily strategy"
+      };
+    });
+    return parsedDays;
+  };
+
+  const dayPlans = parsePlan(plan.workoutPlan, plan.dietPlan);
+
   return (
     <Layout>
-      <header className="mb-10 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Your Protocol</h1>
-          <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs opacity-70">AI-calibrated targets based on your unique biology.</p>
-        </div>
-        <div className="inline-flex items-center bg-primary/20 text-primary px-4 py-2 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] tracking-tighter uppercase italic">
-          Active Plan
-        </div>
-      </header>
-
-      {/* Target Macros Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-accent bg-gradient-to-br from-accent/5 to-transparent">
-          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Calories</span>
-          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetCalories}</div>
-        </div>
-        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-transparent">
-          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Protein</span>
-          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetProtein}<span className="text-lg ml-0.5">g</span></div>
-        </div>
-        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-primary bg-gradient-to-br from-primary/5 to-transparent">
-          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Carbs</span>
-          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetCarbs}<span className="text-lg ml-0.5">g</span></div>
-        </div>
-        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-500/5 to-transparent">
-          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Fat</span>
-          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetFat}<span className="text-lg ml-0.5">g</span></div>
-        </div>
-      </div>
-
-      <div className="space-y-8 pb-20">
-        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden group border-white/5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[100px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
-          <h2 className="text-2xl font-display font-black text-foreground flex items-center gap-4 mb-8 uppercase italic tracking-tighter">
-            <div className="p-3 rounded-xl bg-secondary/20 text-secondary shadow-[0_0_15px_rgba(34,211,238,0.2)] border border-secondary/30">
-              <Dumbbell className="w-6 h-6" />
-            </div>
-            Workout Protocol
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10">
-            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed text-sm md:text-base border-l-2 border-white/5 pl-6 md:pl-10">
-              {plan.workoutPlan}
-            </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="pb-20"
+      >
+        <header className="mb-10 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Your Protocol</h1>
+            <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs opacity-70">AI-calibrated targets based on your unique biology.</p>
           </div>
+          <div className="inline-flex items-center bg-primary/20 text-primary px-4 py-2 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] tracking-tighter uppercase italic">
+            Active Plan
+          </div>
+        </header>
+
+        {/* Target Macros Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <MacroStats label="Calories" value={plan.targetCalories} icon={Flame} color="var(--accent)" />
+          <MacroStats label="Protein" value={plan.targetProtein} unit="g" icon={Zap} color="var(--secondary)" />
+          <MacroStats label="Carbs" value={plan.targetCarbs} unit="g" icon={Droplets} color="var(--primary)" />
+          <MacroStats label="Fat" value={plan.targetFat} unit="g" icon={Info} color="#f97316" />
         </div>
 
-        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden group border-white/5">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
-          <h2 className="text-2xl font-display font-black text-foreground flex items-center gap-4 mb-8 uppercase italic tracking-tighter">
-            <div className="p-3 rounded-xl bg-primary/20 text-primary shadow-[0_0_15px_rgba(168,85,247,0.2)] border border-primary/30">
-              <Utensils className="w-6 h-6" />
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-8">
+          <div className="space-y-12">
+            <AccordionSection title="System Overview" icon={Info} defaultOpen={true}>
+              <div className="whitespace-pre-wrap text-sm md:text-base">
+                {plan.workoutPlan.split('\n\n')[0]}
+              </div>
+            </AccordionSection>
+
+            <div className="space-y-6">
+              <h2 className="text-2xl font-display font-black uppercase italic tracking-tighter border-l-4 border-primary pl-4 mb-8">Weekly Schedule</h2>
+              {dayPlans.map((day, idx) => (
+                <motion.div
+                  key={day.day}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <DayCard {...day} />
+                </motion.div>
+              ))}
             </div>
-            Nutrition Strategy
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10">
-            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed text-sm md:text-base border-l-2 border-white/5 pl-6 md:pl-10">
-              {plan.dietPlan}
-            </div>
+
+            <AccordionSection title="Nutrition Strategy" icon={Utensils} accentColor="var(--primary)">
+              <div className="whitespace-pre-wrap text-sm md:text-base">
+                {plan.dietPlan}
+              </div>
+            </AccordionSection>
           </div>
+
+          <aside className="hidden xl:block space-y-6">
+            <div className="sticky top-8">
+              <div className="glass-card rounded-3xl p-6 border border-white/5">
+                <h3 className="text-sm font-display font-black uppercase italic tracking-widest text-primary mb-4">Quick Navigation</h3>
+                <nav className="space-y-2">
+                  {['Overview', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Nutrition'].map((item) => (
+                    <button 
+                      key={item}
+                      className="w-full text-left px-4 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+              
+              <div className="mt-6 glass-card rounded-3xl p-6 border border-white/5 bg-gradient-to-br from-primary/10 to-transparent">
+                <Zap className="text-primary mb-4 w-6 h-6" />
+                <h4 className="font-display font-black uppercase italic text-sm mb-2">Pro Tip</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Consistency is the core of the protocol. Execute every set with precision.
+                </p>
+              </div>
+            </div>
+          </aside>
         </div>
-      </div>
+      </motion.div>
     </Layout>
+  );
+}
   );
 }
