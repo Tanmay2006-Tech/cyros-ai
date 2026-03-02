@@ -42,14 +42,6 @@ export function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </div>
-        
-        <div className="mt-auto p-4 rounded-2xl bg-white/5 border border-white/5">
-          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-2">Sync Status</p>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm text-foreground">All data synced</span>
-          </div>
-        </div>
       </nav>
 
       {/* Main Content */}

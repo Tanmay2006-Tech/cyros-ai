@@ -38,18 +38,10 @@ export default function Home() {
 
   return (
     <Layout>
-      <header className="mb-10 mt-2 flex justify-between items-start">
-        <div>
-          <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-2 tracking-tighter italic uppercase">
-            {user?.username ? `YO, ${user.username}` : 'WAKE UP'}
-          </h1>
-          <p className="text-primary font-bold tracking-widest text-sm uppercase opacity-90 border-l-2 border-primary pl-4">System Status: Optimized // Level 4 Project</p>
-        </div>
-        <div className="hidden md:block">
-          <div className="bg-primary/20 text-primary px-6 py-2 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] tracking-tighter">
-            HACKATHON EDITION v1.0
-          </div>
-        </div>
+      <header className="mb-10 mt-2">
+        <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-2 tracking-tighter italic uppercase">
+          {user?.username ? `YO, ${user.username}` : 'WAKE UP'}
+        </h1>
       </header>
 
       {!plan ? (

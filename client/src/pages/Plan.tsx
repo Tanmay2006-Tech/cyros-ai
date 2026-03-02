@@ -42,58 +42,62 @@ export default function Plan() {
     <Layout>
       <header className="mb-10 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-display font-bold text-gradient mb-2">Your Protocol</h1>
-          <p className="text-muted-foreground">AI-calibrated targets based on your unique biology.</p>
+          <h1 className="text-4xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Your Protocol</h1>
+          <p className="text-muted-foreground font-medium uppercase tracking-widest text-xs opacity-70">AI-calibrated targets based on your unique biology.</p>
         </div>
-        <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-semibold border border-primary/20">
+        <div className="inline-flex items-center bg-primary/20 text-primary px-4 py-2 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.3)] tracking-tighter uppercase italic">
           Active Plan
         </div>
       </header>
 
       {/* Target Macros Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="glass-card rounded-2xl p-5 border-t-4 border-t-accent">
-          <span className="text-muted-foreground text-sm uppercase tracking-wider font-semibold">Calories</span>
-          <div className="text-3xl font-display font-bold text-foreground mt-1">{plan.targetCalories}</div>
+        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-accent bg-gradient-to-br from-accent/5 to-transparent">
+          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Calories</span>
+          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetCalories}</div>
         </div>
-        <div className="glass-card rounded-2xl p-5 border-t-4 border-t-secondary">
-          <span className="text-muted-foreground text-sm uppercase tracking-wider font-semibold">Protein</span>
-          <div className="text-3xl font-display font-bold text-foreground mt-1">{plan.targetProtein}g</div>
+        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-secondary bg-gradient-to-br from-secondary/5 to-transparent">
+          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Protein</span>
+          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetProtein}<span className="text-lg ml-0.5">g</span></div>
         </div>
-        <div className="glass-card rounded-2xl p-5 border-t-4 border-t-primary">
-          <span className="text-muted-foreground text-sm uppercase tracking-wider font-semibold">Carbs</span>
-          <div className="text-3xl font-display font-bold text-foreground mt-1">{plan.targetCarbs}g</div>
+        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-primary bg-gradient-to-br from-primary/5 to-transparent">
+          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Carbs</span>
+          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetCarbs}<span className="text-lg ml-0.5">g</span></div>
         </div>
-        <div className="glass-card rounded-2xl p-5 border-t-4 border-t-orange-400">
-          <span className="text-muted-foreground text-sm uppercase tracking-wider font-semibold">Fat</span>
-          <div className="text-3xl font-display font-bold text-foreground mt-1">{plan.targetFat}g</div>
+        <div className="glass-card rounded-2xl p-6 border-l-4 border-l-orange-500 bg-gradient-to-br from-orange-500/5 to-transparent">
+          <span className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-black">Fat</span>
+          <div className="text-4xl font-display font-black text-foreground mt-1 tracking-tighter italic">{plan.targetFat}<span className="text-lg ml-0.5">g</span></div>
         </div>
       </div>
 
-      <div className="space-y-8">
-        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[80px] -z-10" />
-          <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3 mb-6 pb-6 border-b border-border">
-            <div className="p-2.5 rounded-xl bg-secondary/10 text-secondary">
+      <div className="space-y-8 pb-20">
+        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden group border-white/5">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[100px] -z-10 group-hover:bg-secondary/20 transition-colors duration-500" />
+          <h2 className="text-2xl font-display font-black text-foreground flex items-center gap-4 mb-8 uppercase italic tracking-tighter">
+            <div className="p-3 rounded-xl bg-secondary/20 text-secondary shadow-[0_0_15px_rgba(34,211,238,0.2)] border border-secondary/30">
               <Dumbbell className="w-6 h-6" />
             </div>
             Workout Protocol
           </h2>
-          <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed">
-            {plan.workoutPlan}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10">
+            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed text-sm md:text-base border-l-2 border-white/5 pl-6 md:pl-10">
+              {plan.workoutPlan}
+            </div>
           </div>
         </div>
 
-        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
-          <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3 mb-6 pb-6 border-b border-border">
-            <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+        <div className="glass-card rounded-[2rem] p-6 md:p-10 relative overflow-hidden group border-white/5">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -z-10 group-hover:bg-primary/20 transition-colors duration-500" />
+          <h2 className="text-2xl font-display font-black text-foreground flex items-center gap-4 mb-8 uppercase italic tracking-tighter">
+            <div className="p-3 rounded-xl bg-primary/20 text-primary shadow-[0_0_15px_rgba(168,85,247,0.2)] border border-primary/30">
               <Utensils className="w-6 h-6" />
             </div>
             Nutrition Strategy
           </h2>
-          <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed">
-            {plan.dietPlan}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-10">
+            <div className="prose prose-invert prose-p:text-muted-foreground prose-headings:text-foreground prose-li:text-muted-foreground max-w-none font-sans whitespace-pre-wrap leading-relaxed text-sm md:text-base border-l-2 border-white/5 pl-6 md:pl-10">
+              {plan.dietPlan}
+            </div>
           </div>
         </div>
       </div>
