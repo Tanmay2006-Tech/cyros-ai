@@ -18,7 +18,7 @@ async function ensureSeedData() {
     const { users } = await import('@shared/schema');
     await db.insert(users).values({
       id: 1,
-      username: "mock_user",
+      username: "Sachin",
       password: "password123", // dummy
       age: 28,
       weight: 75,

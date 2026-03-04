@@ -89,7 +89,7 @@ export default function Plan() {
       >
         <header className="mb-12 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">OS Protocol</h1>
+            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Neural Protocol</h1>
             <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-xs opacity-70">
               Biometric Calibration // Week 01 // XP: {xp}
             </p>
@@ -117,7 +117,7 @@ export default function Plan() {
 
               {/* Macro Strip */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <MacroStats label="Fuel" value={day.diet.calories} icon={Flame} color="var(--accent)" />
+                <MacroStats label="Energy" value={day.diet.calories} icon={Flame} color="var(--accent)" />
                 <MacroStats label="Protein" value={day.diet.protein} unit="g" icon={Zap} color="var(--secondary)" />
                 <MacroStats label="Carbs" value={day.diet.carbs} unit="g" icon={Droplets} color="var(--primary)" />
                 <MacroStats label="Fats" value={day.diet.fats} unit="g" icon={Info} color="#f97316" />
@@ -134,7 +134,7 @@ export default function Plan() {
                       <div key={i} className="glass-card p-5 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-secondary/30 transition-all hover:bg-white/5">
                         <div>
                           <div className="font-display font-black uppercase italic tracking-tight text-foreground group-hover:text-secondary transition-colors">{ex.name}</div>
-                          <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-0.5">Matrix ID: {idx}{i}</div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-0.5">Ref ID: {idx}{i}</div>
                         </div>
                         <div className="text-right">
                           <div className="text-lg font-display font-black italic tracking-tighter text-foreground">{ex.sets}</div>
