@@ -1,10 +1,9 @@
+import { Layout } from "@/components/Layout";
+import { Trophy, Zap, Star, Award, Flame } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
-  import { Layout } from "@/components/Layout";
-  import { Trophy, Zap, Star, Award, Flame } from "lucide-react";
-  import { useEffect, useState } from "react";
-  import { motion } from "framer-motion";
-
-  export default function Challenges() {
+export default function Challenges() {
     const [xp, setXp] = useState(0);
     const [streak, setStreak] = useState(0);
 
