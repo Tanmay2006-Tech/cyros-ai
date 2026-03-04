@@ -87,29 +87,40 @@ export async function registerRoutes(
       }
 
       const prompt = `
-        You are an expert AI Diet & Fitness Planner.
-        Create a personalized plan for a user with the following details:
-        Age: ${user.age}
-        Weight: ${user.weight} kg
-        Height: ${user.height} cm
-        Goal: ${user.goal}
-        Activity Level: ${user.activityLevel}
+        You are an expert AI Diet & Fitness Planner for "Cyros AI", an elite fitness operating system.
+        Create a personalized weekly plan for a user with these metrics:
+        Age: ${user.age}, Weight: ${user.weight}kg, Height: ${user.height}cm, Goal: ${user.goal}, Activity: ${user.activityLevel}
 
-        Today's Date: ${new Date().toISOString().split('T')[0]}
-
-        Respond ONLY with a JSON object in this exact format, no markdown tags:
+        Respond ONLY with a JSON object in this exact structure, no markdown, no text outside JSON:
         {
-          "dietPlan": "Detailed text describing the diet strategy and suggested meals. Make it specific to the user's metrics.",
-          "workoutPlan": "Detailed text describing the workout routine and schedule. Make it specific to the user's metrics.",
-          "targetCalories": 2000,
-          "targetProtein": 150,
-          "targetCarbs": 200,
-          "targetFat": 65
+          "week": [
+            {
+              "day": "Monday",
+              "intensity": "High",
+              "workout": [
+                { "name": "Bench Press", "sets": "4x8", "rest": "90s" },
+                { "name": "Incline DB Press", "sets": "3x10", "rest": "60s" }
+              ],
+              "diet": {
+                "calories": 2100,
+                "protein": 150,
+                "carbs": 220,
+                "fats": 65
+              },
+              "challenges": ["10k Steps", "3L Water", "No Junk Food"]
+            }
+          ]
         }
+
+        Rules:
+        - Include all 7 days of the week starting from Monday.
+        - Vary intensity: High, Moderate, Recovery.
+        - Match macros to intensity (higher carbs on High days).
+        - Keep workout names concise.
       `;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-5.1",
+        model: "gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
@@ -121,14 +132,20 @@ export async function registerRoutes(
 
       const generatedData = JSON.parse(content);
 
+      // Extract average targets for the summary columns
+      const avgCalories = Math.round(generatedData.week.reduce((acc: number, d: any) => acc + d.diet.calories, 0) / 7);
+      const avgProtein = Math.round(generatedData.week.reduce((acc: number, d: any) => acc + d.diet.protein, 0) / 7);
+      const avgCarbs = Math.round(generatedData.week.reduce((acc: number, d: any) => acc + d.diet.carbs, 0) / 7);
+      const avgFat = Math.round(generatedData.week.reduce((acc: number, d: any) => acc + d.diet.fats, 0) / 7);
+
       const plan = await storage.createPlan({
         userId: 1,
-        dietPlan: generatedData.dietPlan,
-        workoutPlan: generatedData.workoutPlan,
-        targetCalories: generatedData.targetCalories,
-        targetProtein: generatedData.targetProtein,
-        targetCarbs: generatedData.targetCarbs,
-        targetFat: generatedData.targetFat,
+        dietPlan: JSON.stringify(generatedData.week), // Store JSON in the text field
+        workoutPlan: JSON.stringify(generatedData.week), // Re-using JSON structure for both
+        targetCalories: avgCalories,
+        targetProtein: avgProtein,
+        targetCarbs: avgCarbs,
+        targetFat: avgFat,
       });
 
       res.status(201).json(plan);

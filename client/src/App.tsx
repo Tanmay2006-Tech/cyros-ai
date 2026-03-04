@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Plan from "./pages/Plan";
 import Nutrition from "./pages/Nutrition";
+import Challenges from "./pages/Challenges";
 
 function Router() {
   return (
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/plan" component={Plan} />
       <Route path="/nutrition" component={Nutrition} />
+      <Route path="/challenges" component={Challenges} />
       <Route component={NotFound} />
     </Switch>
   );
