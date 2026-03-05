@@ -27,7 +27,9 @@ import "dotenv/config";
 
   (async () => {
     const server = http.createServer(app);
-    await registerRoutes(app, server);
+    
+    // FIXED ORDER: server (httpServer) first, then app (Express)
+    await registerRoutes(server, app);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;

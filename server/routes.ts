@@ -45,10 +45,7 @@ async function ensureSeedData() {
   }
 }
 
-export async function registerRoutes(
-  httpServer: Server,
-  app: Express
-): Promise<Server> {
+export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
   
   await ensureSeedData();
 
