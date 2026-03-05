@@ -135,7 +135,7 @@ export default function Progress() {
                       type="monotone" 
                       dataKey="calories" 
                       name="Consumed"
-                      stroke="var(--primary)" 
+                      stroke="#a855f7" 
                       strokeWidth={4}
                       fillOpacity={1} 
                       fill="url(#colorCals)" 
@@ -145,10 +145,10 @@ export default function Progress() {
                       type="monotone" 
                       dataKey="targetCals" 
                       name="Neural Target"
-                      stroke="var(--secondary)" 
+                      stroke="#22d3ee" 
                       strokeWidth={3}
                       strokeDasharray="8 4" 
-                      dot={{ r: 4, fill: 'var(--secondary)', strokeWidth: 0 }} 
+                      dot={{ r: 4, fill: '#22d3ee', strokeWidth: 0 }} 
                     />
                     <Legend 
                       verticalAlign="top" 
@@ -192,7 +192,7 @@ export default function Progress() {
                     <Bar 
                       dataKey="protein" 
                       name="Protein Logged"
-                      fill="var(--secondary)" 
+                      fill="#22d3ee" 
                       radius={[6, 6, 0, 0]} 
                       barSize={40}
                       animationDuration={1500}
@@ -200,7 +200,7 @@ export default function Progress() {
                     <Bar 
                       dataKey="targetProtein" 
                       name="Neural Target"
-                      fill="rgba(255,255,255,0.1)" 
+                      fill="rgba(168, 85, 247, 0.2)" 
                       radius={[6, 6, 0, 0]} 
                       barSize={40}
                     />
