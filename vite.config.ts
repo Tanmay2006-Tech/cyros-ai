@@ -19,6 +19,7 @@ export default defineConfig({
   server: {
     hmr: { overlay: false },
     fs: { strict: false },
+    allowedHosts: true,
   },
   optimizeDeps: { force: true }
 });
