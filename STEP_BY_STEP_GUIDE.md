@@ -15,6 +15,8 @@ Download and install the **LTS version** of Node.js from [nodejs.org](https://no
 2. Open that folder in **VS Code**.
 
 ### Step 4: Create Environment File (.env)
+
+**CRITICAL**: You must create a file named exactly `.env` (with a dot at the start) in the root folder. If you do not do this, you will get the "DATABASE_URL must be set" error.
 Create a new file named `.env` in the root folder and paste this (replace with your database password):
 ```env
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD_HERE@localhost:5432/cyros_db
