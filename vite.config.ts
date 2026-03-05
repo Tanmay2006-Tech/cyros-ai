@@ -21,5 +21,4 @@ export default defineConfig({
     fs: { strict: false },
     allowedHosts: true,
   },
-  optimizeDeps: { force: true }
 });

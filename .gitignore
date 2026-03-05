@@ -6,4 +6,5 @@ vite.config.ts.*
 *.tar.gz
 .replit
 replit.nix
+.local
 .env
