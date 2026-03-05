@@ -16,5 +16,7 @@ import { defineConfig } from "vite";
       hmr: { overlay: false },
       fs: { strict: false },
     },
-    optimizeDeps: { force: true }
+    optimizeDeps: {
+      force: true
+    }
   });
