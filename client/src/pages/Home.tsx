@@ -6,6 +6,7 @@ import { Flame, Target, ArrowRight, Activity, Plus, User as UserIcon } from "luc
 import { HealthRing } from "@/components/HealthRing";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Layout } from "@/components/Layout";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const { data: user, isLoading: loadingUser } = useUser();
