@@ -27,17 +27,31 @@ export default function Profile() {
     );
   }
 
+  const [updateSuccess, setUpdateSuccess] = React.useState(false);
+
   async function handleUpdate(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setUpdateSuccess(false);
     const fd = new FormData(e.currentTarget);
+    const data = {
+      age: Number(fd.get("age")),
+      weight: Number(fd.get("weight")),
+      height: Number(fd.get("height")),
+      goal: fd.get("goal") as string,
+      activityLevel: fd.get("activityLevel") as string,
+    };
     try {
-      await updateMutation.mutateAsync({
-        age: Number(fd.get("age")),
-        weight: Number(fd.get("weight")),
-        height: Number(fd.get("height")),
-        goal: fd.get("goal") as string,
-        activityLevel: fd.get("activityLevel") as string,
+      const res = await fetch("/api/users/me", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || "Failed to update profile");
+      }
+      setUpdateSuccess(true);
+      setTimeout(() => setUpdateSuccess(false), 3000);
       toast({
         title: "Profile Updated",
         description: "Your health metrics have been saved successfully.",
@@ -151,10 +165,14 @@ export default function Profile() {
 
             <button
               type="submit"
-              disabled={updateMutation.isPending}
-              className="w-full py-4 rounded-xl font-black uppercase italic tracking-widest bg-white/5 border border-white/10 text-foreground hover:bg-white/10 transition-all duration-200 flex items-center justify-center gap-2 mt-4"
+              className={`w-full py-4 rounded-xl font-black uppercase italic tracking-widest border transition-all duration-300 flex items-center justify-center gap-2 mt-4 ${
+                updateSuccess 
+                  ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
+                  : "bg-white/5 border-white/10 text-foreground hover:bg-white/10"
+              }`}
+              data-testid="button-update-metrics"
             >
-              {updateMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Metrics"}
+              {updateSuccess ? "Updated Successfully!" : "Update Metrics"}
             </button>
           </form>
         </div>
