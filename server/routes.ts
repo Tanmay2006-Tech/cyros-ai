@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import type { Server } from "http";
+import type { Server } from "node:http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
