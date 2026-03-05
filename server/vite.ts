@@ -30,7 +30,7 @@ import express, { type Express } from "express";
     });
 
     app.use(viteServer.middlewares);
-    app.use("(.*)", async (req, res, next) => {
+    app.use("/", async (req, res, next) => {
       const url = req.originalUrl;
 
       try {
@@ -56,7 +56,7 @@ import express, { type Express } from "express";
 
     app.use(express.static(distPath));
 
-    app.use("(.*)", (_req, res) => {
+    app.use("/", (_req, res) => {
       res.sendFile(path.resolve(distPath, "index.html"));
     });
   }
