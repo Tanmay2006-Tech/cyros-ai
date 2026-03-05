@@ -1,3 +1,4 @@
+import * as React from "react";
 import { useUser, useUpdateUser } from "@/hooks/use-users";
 import { useGeneratePlan } from "@/hooks/use-plans";
 import { Layout } from "@/components/Layout";
@@ -5,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FormEvent } from "react";
 import { Loader2, Sparkles, Activity } from "lucide-react";
 import { useLocation } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Profile() {
   const { data: user, isLoading } = useUser();
@@ -12,6 +14,7 @@ export default function Profile() {
   const generateMutation = useGeneratePlan();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [isScanning, setIsScanning] = React.useState(false);
 
   if (isLoading) {
     return (
@@ -49,75 +52,81 @@ export default function Profile() {
   }
 
   async function handleGeneratePlan() {
+    setIsScanning(true);
     try {
+      // Artificial delay for "Scanning" effect
+      await new Promise(resolve => setTimeout(resolve, 3000));
       await generateMutation.mutateAsync();
       toast({
-        title: "AI Plan Generated",
-        description: "Your personalized plan is ready!",
+        title: "Protocol Initialized",
+        description: "Your fitness plan has been synchronized.",
       });
       setLocation("/plan");
     } catch (err: any) {
       toast({
-        title: "Generation Failed",
+        title: "Sync Failed",
         description: err.message,
         variant: "destructive",
       });
+    } finally {
+      setIsScanning(false);
     }
   }
 
   return (
     <Layout>
       <header className="mb-10 mt-2">
-        <h1 className="text-4xl font-display font-bold text-gradient mb-2">Health Profile</h1>
-        <p className="text-muted-foreground">Keep your metrics up to date for precise AI coaching.</p>
+        <h1 className="text-4xl font-display font-bold text-gradient mb-2 uppercase italic tracking-tighter">Health Profile</h1>
+        <p className="text-muted-foreground uppercase tracking-widest text-[10px] font-bold opacity-70">Initialize Biometric Data // System ID: {user?.id}</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <form onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden">
+          <form onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[80px] -z-10" />
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground ml-1">Age (Years)</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Age (Years)</label>
                 <input
                   name="age"
                   type="number"
                   defaultValue={user?.age || ""}
                   required
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 28"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground ml-1">Weight (kg)</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Weight (kg)</label>
                 <input
                   name="weight"
                   type="number"
                   defaultValue={user?.weight || ""}
                   required
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 75"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground ml-1">Height (cm)</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Height (cm)</label>
                 <input
                   name="height"
                   type="number"
                   defaultValue={user?.height || ""}
                   required
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 180"
                 />
               </div>
               
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground ml-1">Primary Goal</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Primary Goal</label>
                 <select
                   name="goal"
                   defaultValue={user?.goal || "maintain"}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
                 >
                   <option value="lose_weight" className="bg-card">Lose Weight</option>
                   <option value="maintain" className="bg-card">Maintain Weight</option>
@@ -126,11 +135,11 @@ export default function Profile() {
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-medium text-muted-foreground ml-1">Activity Level</label>
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Activity Level</label>
                 <select
                   name="activityLevel"
                   defaultValue={user?.activityLevel || "moderate"}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
                 >
                   <option value="sedentary" className="bg-card">Sedentary (Little or no exercise)</option>
                   <option value="light" className="bg-card">Lightly Active (Light exercise 1-3 days/week)</option>
@@ -143,39 +152,75 @@ export default function Profile() {
             <button
               type="submit"
               disabled={updateMutation.isPending}
-              className="w-full py-4 rounded-xl font-bold bg-white/10 text-foreground hover:bg-white/15 transition-all duration-200 flex items-center justify-center gap-2 mt-4"
+              className="w-full py-4 rounded-xl font-black uppercase italic tracking-widest bg-white/5 border border-white/10 text-foreground hover:bg-white/10 transition-all duration-200 flex items-center justify-center gap-2 mt-4"
             >
-              {updateMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
+              {updateMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Metrics"}
             </button>
           </form>
         </div>
 
         <div className="lg:col-span-1">
-          <div className="glass-card rounded-[2rem] p-6 text-center h-full flex flex-col justify-center relative overflow-hidden">
+          <div className="glass-card rounded-[2rem] p-6 text-center h-full flex flex-col justify-center relative overflow-hidden group">
+            <AnimatePresence>
+              {isScanning && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center"
+                >
+                  <div className="relative w-24 h-24 mb-6">
+                    <motion.div 
+                      className="absolute inset-0 border-2 border-primary rounded-full"
+                      animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <motion.div 
+                      className="absolute inset-0 border-t-2 border-primary rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    <Activity className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
+                  </div>
+                  <h4 className="text-xl font-display font-black uppercase italic text-white mb-2">Neural Scan</h4>
+                  <p className="text-xs text-primary font-bold uppercase tracking-widest animate-pulse">Analyzing Bio-Metrics...</p>
+                  
+                  <div className="mt-8 w-full max-w-[200px] h-1 bg-white/10 rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full bg-primary"
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 3 }}
+                    />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent -z-10" />
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-400 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-400 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-500">
               <Sparkles className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h3 className="text-xl font-display font-bold text-foreground mb-3">AI Intelligence</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-              Generate a cutting-edge, personalized protocol based on your latest biometric data.
+            <h3 className="text-xl font-display font-bold text-foreground mb-3 uppercase italic">AI Intelligence</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-8 font-medium">
+              Synchronize your metrics to initialize a high-performance fitness protocol.
             </p>
             
             <button
               onClick={handleGeneratePlan}
-              disabled={generateMutation.isPending || !user?.weight}
-              className="w-full py-4 rounded-xl font-bold bg-gradient-to-r from-primary to-emerald-500 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              disabled={generateMutation.isPending || isScanning || !user?.weight}
+              className="w-full py-4 rounded-xl font-black uppercase italic tracking-widest bg-gradient-to-r from-primary to-emerald-500 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
-              {generateMutation.isPending ? (
+              {generateMutation.isPending || isScanning ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" /> Analyzing Data...
+                  <Loader2 className="w-5 h-5 animate-spin" /> Syncing...
                 </>
               ) : (
-                "Generate New Plan"
+                "Initialize Plan"
               )}
             </button>
             {!user?.weight && (
-              <p className="text-xs text-destructive mt-3 font-medium">Please save your profile first.</p>
+              <p className="text-[10px] text-accent mt-4 font-black uppercase tracking-widest animate-pulse">Metrics Required</p>
             )}
           </div>
         </div>
