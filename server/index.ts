@@ -48,6 +48,7 @@ import "dotenv/config";
     const PORT = 5000;
     server.listen(PORT, "0.0.0.0", () => {
       log(`serving on port ${PORT}`);
+      console.log(`\n  > Local: http://localhost:${PORT}\n`);
     });
   })();
   
