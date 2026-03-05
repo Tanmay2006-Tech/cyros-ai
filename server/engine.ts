@@ -21,18 +21,67 @@ if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OP
   console.warn("No AI API key found. Set GEMINI_API_KEY for free local use.");
 }
 
-const SAMPLE_WEEK = [
-  { day: "Monday", intensity: "High", workout: [{ name: "Bench Press", sets: "4x8", rest: "90s" }, { name: "Incline DB Press", sets: "3x10", rest: "60s" }], diet: { calories: 2200, protein: 160, carbs: 240, fats: 65 }, challenges: ["10k Steps", "3L Water", "No Junk Food"] },
-  { day: "Tuesday", intensity: "Moderate", workout: [{ name: "Squats", sets: "4x10", rest: "90s" }, { name: "Leg Press", sets: "3x12", rest: "60s" }], diet: { calories: 2100, protein: 150, carbs: 220, fats: 60 }, challenges: ["8k Steps", "2.5L Water"] },
-  { day: "Wednesday", intensity: "Recovery", workout: [{ name: "Yoga Flow", sets: "30min", rest: "-" }, { name: "Stretching", sets: "15min", rest: "-" }], diet: { calories: 1900, protein: 130, carbs: 200, fats: 55 }, challenges: ["Meditate 10min", "Sleep 8hrs"] },
-  { day: "Thursday", intensity: "High", workout: [{ name: "Deadlift", sets: "4x6", rest: "120s" }, { name: "Barbell Row", sets: "3x10", rest: "60s" }], diet: { calories: 2300, protein: 170, carbs: 250, fats: 70 }, challenges: ["10k Steps", "3L Water", "High Protein"] },
-  { day: "Friday", intensity: "Moderate", workout: [{ name: "Shoulder Press", sets: "4x10", rest: "60s" }, { name: "Lateral Raises", sets: "3x15", rest: "45s" }], diet: { calories: 2100, protein: 155, carbs: 220, fats: 60 }, challenges: ["Cook Own Meal", "No Sugar"] },
-  { day: "Saturday", intensity: "High", workout: [{ name: "Pull Ups", sets: "4x8", rest: "90s" }, { name: "Bicep Curls", sets: "3x12", rest: "45s" }], diet: { calories: 2200, protein: 160, carbs: 230, fats: 65 }, challenges: ["12k Steps", "3L Water"] },
-  { day: "Sunday", intensity: "Recovery", workout: [{ name: "Light Walk", sets: "45min", rest: "-" }, { name: "Foam Rolling", sets: "15min", rest: "-" }], diet: { calories: 1800, protein: 120, carbs: 190, fats: 50 }, challenges: ["Rest Day", "Meal Prep"] }
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function rand(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const EXERCISES = {
+  chest: ["Bench Press", "Incline DB Press", "Cable Flyes", "Push-ups", "Dumbbell Pullover", "Chest Dips"],
+  back: ["Deadlift", "Barbell Row", "Pull Ups", "Lat Pulldown", "Cable Row", "T-Bar Row"],
+  legs: ["Squats", "Leg Press", "Romanian Deadlift", "Lunges", "Leg Curl", "Calf Raises", "Bulgarian Split Squat"],
+  shoulders: ["Shoulder Press", "Lateral Raises", "Face Pulls", "Arnold Press", "Rear Delt Flyes", "Upright Row"],
+  arms: ["Bicep Curls", "Tricep Dips", "Hammer Curls", "Skull Crushers", "Cable Curls", "Overhead Extension"],
+  recovery: ["Yoga Flow", "Stretching", "Light Walk", "Foam Rolling", "Mobility Drills", "Meditation"]
+};
+
+const CHALLENGES = [
+  "10k Steps", "12k Steps", "8k Steps", "3L Water", "2.5L Water", "No Junk Food",
+  "No Sugar", "Cook Own Meal", "High Protein Day", "Meditate 10min", "Sleep 8hrs",
+  "Meal Prep", "Take Stairs", "Morning Walk", "Evening Stretch", "Track All Meals"
 ];
 
-function getSampleData(): string {
-  return JSON.stringify({ week: SAMPLE_WEEK });
+const SETS_OPTIONS = ["3x8", "3x10", "3x12", "3x15", "4x6", "4x8", "4x10", "4x12"];
+const REST_OPTIONS = ["45s", "60s", "90s", "120s"];
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+function generateRandomPlan(): string {
+  const muscleGroups = ["chest", "legs", "recovery", "back", "shoulders", "arms", "recovery"] as const;
+  const intensities = ["High", "Moderate", "Recovery", "High", "Moderate", "High", "Recovery"];
+
+  const week = DAYS.map((day, i) => {
+    const group = muscleGroups[i];
+    const intensity = intensities[i];
+    const isRecovery = intensity === "Recovery";
+
+    const exercises = EXERCISES[group];
+    const shuffled = [...exercises].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, isRecovery ? 2 : rand(2, 3));
+
+    const workout = selected.map(name => ({
+      name,
+      sets: isRecovery ? `${rand(15, 30)}min` : pick(SETS_OPTIONS),
+      rest: isRecovery ? "-" : pick(REST_OPTIONS),
+    }));
+
+    const baseCal = isRecovery ? rand(1700, 1900) : intensity === "High" ? rand(2100, 2400) : rand(1900, 2100);
+    const diet = {
+      calories: baseCal,
+      protein: rand(120, 180),
+      carbs: rand(180, 260),
+      fats: rand(45, 75),
+    };
+
+    const shuffledChallenges = [...CHALLENGES].sort(() => Math.random() - 0.5);
+    const challenges = shuffledChallenges.slice(0, rand(2, 3));
+
+    return { day, intensity, workout, diet, challenges };
+  });
+
+  return JSON.stringify({ week });
 }
 
 async function callWithRetry(prompt: string, retries = 3): Promise<string> {
@@ -43,7 +92,7 @@ async function callWithRetry(prompt: string, retries = 3): Promise<string> {
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
-      return response.choices[0]?.message?.content ?? getSampleData();
+      return response.choices[0]?.message?.content ?? generateRandomPlan();
     } catch (err: any) {
       console.warn(`AI attempt ${attempt}/${retries} failed:`, err?.status || err?.message);
       if (err?.status === 429 && attempt < retries) {
@@ -53,17 +102,17 @@ async function callWithRetry(prompt: string, retries = 3): Promise<string> {
         continue;
       }
       if (attempt === retries) {
-        console.warn("All AI attempts failed. Using sample fitness data.");
-        return getSampleData();
+        console.warn("All AI attempts failed. Using randomized fitness data.");
+        return generateRandomPlan();
       }
     }
   }
-  return getSampleData();
+  return generateRandomPlan();
 }
 
 export async function generatePlan(prompt: string) {
   if (!openai) {
-    return getSampleData();
+    return generateRandomPlan();
   }
   return callWithRetry(prompt);
 }
