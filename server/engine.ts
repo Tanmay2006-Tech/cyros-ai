@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-let provider: "openai" | "gemini" | "none" = "none";
+let provider: "openai" | "openrouter" | "gemini" | "none" = "none";
 let openaiClient: OpenAI | null = null;
 let geminiApiKey: string = "";
 
@@ -11,12 +11,19 @@ if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OP
   });
   provider = "openai";
   console.log("AI Provider: OpenAI (GPT-4o)");
+} else if (process.env.OPENROUTER_API_KEY) {
+  openaiClient = new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+  });
+  provider = "openrouter";
+  console.log("AI Provider: OpenRouter (Free models)");
 } else if (process.env.GEMINI_API_KEY) {
   geminiApiKey = process.env.GEMINI_API_KEY;
   provider = "gemini";
   console.log("AI Provider: Google Gemini (2.0 Flash - Free)");
 } else {
-  console.warn("No AI API key found. Set GEMINI_API_KEY for free local use.");
+  console.warn("No AI API key found. Set OPENROUTER_API_KEY for free local use.");
 }
 
 function pick<T>(arr: T[]): T {
@@ -82,6 +89,37 @@ function generateRandomPlan(): string {
   return JSON.stringify({ week });
 }
 
+async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await openaiClient!.chat.completions.create({
+        model: "deepseek/deepseek-r1-0528:free",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+      });
+      const content = response.choices[0]?.message?.content;
+      if (content) {
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          JSON.parse(jsonMatch[0]);
+          return jsonMatch[0];
+        }
+      }
+      console.warn("OpenRouter response was not valid JSON.");
+      return generateRandomPlan();
+    } catch (err: any) {
+      console.warn(`OpenRouter attempt ${attempt}/${retries} failed:`, err?.message || err);
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, attempt * 3000));
+        continue;
+      }
+      console.warn("All OpenRouter attempts failed. Using randomized fitness data.");
+      return generateRandomPlan();
+    }
+  }
+  return generateRandomPlan();
+}
+
 async function callGemini(prompt: string, retries = 3): Promise<string> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
 
@@ -96,16 +134,6 @@ async function callGemini(prompt: string, retries = 3): Promise<string> {
         }),
       });
 
-      if (res.status === 429) {
-        console.warn(`Gemini rate limited (429). Attempt ${attempt}/${retries}`);
-        if (attempt < retries) {
-          await new Promise(r => setTimeout(r, attempt * 5000));
-          continue;
-        }
-        console.warn("All Gemini attempts rate limited. Using randomized plan.");
-        return generateRandomPlan();
-      }
-
       if (!res.ok) {
         const errBody = await res.text();
         console.warn(`Gemini API error ${res.status}: ${errBody}`);
@@ -114,19 +142,13 @@ async function callGemini(prompt: string, retries = 3): Promise<string> {
 
       const data = await res.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-      if (!text) {
-        console.warn("Gemini returned empty response.");
-        return generateRandomPlan();
+      if (text) {
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          JSON.parse(jsonMatch[0]);
+          return jsonMatch[0];
+        }
       }
-
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        JSON.parse(jsonMatch[0]);
-        return jsonMatch[0];
-      }
-
-      console.warn("Gemini response was not valid JSON.");
       return generateRandomPlan();
     } catch (err: any) {
       console.warn(`Gemini attempt ${attempt}/${retries} failed:`, err?.message || err);
@@ -134,7 +156,6 @@ async function callGemini(prompt: string, retries = 3): Promise<string> {
         await new Promise(r => setTimeout(r, attempt * 5000));
         continue;
       }
-      console.warn("All Gemini attempts failed. Using randomized fitness data.");
       return generateRandomPlan();
     }
   }
@@ -152,23 +173,20 @@ async function callOpenAI(prompt: string, retries = 3): Promise<string> {
       return response.choices[0]?.message?.content ?? generateRandomPlan();
     } catch (err: any) {
       console.warn(`OpenAI attempt ${attempt}/${retries} failed:`, err?.status || err?.message);
-      if (err?.status === 429 && attempt < retries) {
-        const delay = attempt * 5000;
-        console.warn(`Rate limited. Retrying in ${delay / 1000}s...`);
-        await new Promise(r => setTimeout(r, delay));
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, attempt * 5000));
         continue;
       }
-      if (attempt === retries) {
-        console.warn("All OpenAI attempts failed. Using randomized fitness data.");
-        return generateRandomPlan();
-      }
+      return generateRandomPlan();
     }
   }
   return generateRandomPlan();
 }
 
 export async function generatePlan(prompt: string) {
-  if (provider === "gemini") {
+  if (provider === "openrouter") {
+    return callOpenRouter(prompt);
+  } else if (provider === "gemini") {
     return callGemini(prompt);
   } else if (provider === "openai") {
     return callOpenAI(prompt);
