@@ -140,9 +140,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
 
       res.status(201).json(plan);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("AI Generation Error:", error);
-      res.status(500).json({ message: "Failed to generate plan" });
+      const msg = error?.message || "Failed to generate plan";
+      res.status(500).json({ message: msg });
     }
   });
 
