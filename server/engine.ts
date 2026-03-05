@@ -1,13 +1,13 @@
 
-  import OpenAI from "openai";
+  import engine from "engine";
 
-  // Support both standard OpenAI and Replit-style env vars for maximum compatibility
-  const apiKey = process.env.OPENAI_API_KEY || process.env.CORE_ENGINE_API_KEY;
+  // Support both standard engine and system-style env vars for maximum compatibility
+  const apiKey = process.env.engine_API_KEY || process.env.CORE_ENGINE_API_KEY;
 
-  let engine: OpenAI | null = null;
+  let engine: engine | null = null;
 
   if (apiKey) {
-    engine = new OpenAI({
+    engine = new engine({
       apiKey: apiKey,
     });
   }
