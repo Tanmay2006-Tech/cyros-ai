@@ -1,9 +1,8 @@
 import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 let provider: "openai" | "gemini" | "none" = "none";
 let openaiClient: OpenAI | null = null;
-let geminiModel: any = null;
+let geminiApiKey: string = "";
 
 if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
   openaiClient = new OpenAI({
@@ -13,8 +12,7 @@ if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OP
   provider = "openai";
   console.log("AI Provider: OpenAI (GPT-4o)");
 } else if (process.env.GEMINI_API_KEY) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  geminiModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  geminiApiKey = process.env.GEMINI_API_KEY;
   provider = "gemini";
   console.log("AI Provider: Google Gemini (2.0 Flash - Free)");
 } else {
@@ -85,23 +83,55 @@ function generateRandomPlan(): string {
 }
 
 async function callGemini(prompt: string, retries = 3): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
+
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const result = await geminiModel.generateContent(prompt);
-      const text = result.response.text();
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        }),
+      });
+
+      if (res.status === 429) {
+        console.warn(`Gemini rate limited (429). Attempt ${attempt}/${retries}`);
+        if (attempt < retries) {
+          await new Promise(r => setTimeout(r, attempt * 5000));
+          continue;
+        }
+        console.warn("All Gemini attempts rate limited. Using randomized plan.");
+        return generateRandomPlan();
+      }
+
+      if (!res.ok) {
+        const errBody = await res.text();
+        console.warn(`Gemini API error ${res.status}: ${errBody}`);
+        throw new Error(`Gemini ${res.status}`);
+      }
+
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!text) {
+        console.warn("Gemini returned empty response.");
+        return generateRandomPlan();
+      }
+
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         JSON.parse(jsonMatch[0]);
         return jsonMatch[0];
       }
-      console.warn("Gemini response was not valid JSON, using randomized plan.");
+
+      console.warn("Gemini response was not valid JSON.");
       return generateRandomPlan();
     } catch (err: any) {
       console.warn(`Gemini attempt ${attempt}/${retries} failed:`, err?.message || err);
       if (attempt < retries) {
-        const delay = attempt * 5000;
-        console.warn(`Retrying in ${delay / 1000}s...`);
-        await new Promise(r => setTimeout(r, delay));
+        await new Promise(r => setTimeout(r, attempt * 5000));
         continue;
       }
       console.warn("All Gemini attempts failed. Using randomized fitness data.");
