@@ -64,8 +64,8 @@ export default function Home() {
             <div className="text-xl font-display font-black italic uppercase text-white">#1 Global</div>
           </div>
           <div className="px-6 py-3 bg-secondary/10 border border-secondary/30 rounded-2xl backdrop-blur-sm">
-            <div className="text-[10px] uppercase font-black tracking-widest text-secondary mb-1">Uptime</div>
-            <div className="text-xl font-display font-black italic uppercase text-white">99.9%</div>
+            <div className="text-[10px] uppercase font-black tracking-widest text-secondary mb-1">Status</div>
+            <div className="text-xl font-display font-black italic uppercase text-white">Online</div>
           </div>
         </div>
       </header>
