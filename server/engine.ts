@@ -1,25 +1,31 @@
 import OpenAI from "openai";
 
-let openai: OpenAI;
+let aiClient: OpenAI;
 let modelName: string;
+let providerName: string;
 
 if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-  openai = new OpenAI({
+  aiClient = new OpenAI({
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
   });
   modelName = "gpt-4o";
+  providerName = "OpenAI";
 } else if (process.env.GEMINI_API_KEY) {
-  openai = new OpenAI({
+  aiClient = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
     baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
   });
   modelName = "gemini-2.0-flash";
+  providerName = "Google Gemini";
 } else {
-  openai = null as any;
+  aiClient = null as any;
   modelName = "";
+  providerName = "None";
   console.warn("No AI API key found. Set GEMINI_API_KEY for free local use.");
 }
+
+console.log(`AI Provider: ${providerName} | Model: ${modelName || "fallback"}`);
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -87,7 +93,7 @@ function generateRandomPlan(): string {
 async function callWithRetry(prompt: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await openai.chat.completions.create({
+      const response = await aiClient.chat.completions.create({
         model: modelName,
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
@@ -111,10 +117,10 @@ async function callWithRetry(prompt: string, retries = 3): Promise<string> {
 }
 
 export async function generatePlan(prompt: string) {
-  if (!openai) {
+  if (!aiClient) {
     return generateRandomPlan();
   }
   return callWithRetry(prompt);
 }
 
-export default openai;
+export default aiClient;
