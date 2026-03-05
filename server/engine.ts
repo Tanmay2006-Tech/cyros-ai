@@ -21,6 +21,28 @@ if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OP
   console.warn("No AI API key found. Set GEMINI_API_KEY for free local use.");
 }
 
+async function callWithRetry(prompt: string, retries = 3): Promise<string | null> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await openai.chat.completions.create({
+        model: modelName,
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+      });
+      return response.choices[0]?.message?.content ?? null;
+    } catch (err: any) {
+      if (err?.status === 429 && attempt < retries) {
+        const delay = attempt * 5000;
+        console.warn(`Rate limited (429). Retrying in ${delay / 1000}s... (attempt ${attempt}/${retries})`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+  return null;
+}
+
 export async function generatePlan(prompt: string) {
   if (!openai) {
     return JSON.stringify({
@@ -36,12 +58,7 @@ export async function generatePlan(prompt: string) {
     });
   }
 
-  const response = await openai.chat.completions.create({
-    model: modelName,
-    messages: [{ role: "user", content: prompt }],
-    response_format: { type: "json_object" },
-  });
-  return response.choices[0]?.message?.content;
+  return callWithRetry(prompt);
 }
 
 export default openai;
