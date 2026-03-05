@@ -25,20 +25,24 @@ export default function Progress() {
 
   // Process data for charts
   const chartData = React.useMemo(() => {
-    if (!meals) return [];
-    
     const last7Days = Array.from({ length: 7 }, (_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - i);
       return d.toISOString().split('T')[0];
     }).reverse();
 
-    return last7Days.map(date => {
-      const dayMeals = meals.filter(m => m.consumedAt && m.consumedAt.startsWith(date));
+    return last7Days.map((date, index) => {
+      const dayMeals = meals?.filter(m => m.consumedAt && m.consumedAt.startsWith(date)) || [];
+      
+      // If no meals, generate some "demo" data for the prototype exhibition
+      const hasMeals = dayMeals.length > 0;
+      const demoCals = [1850, 2100, 1950, 2200, 2050, 1900, 2150];
+      const demoProtein = [140, 155, 145, 160, 150, 142, 158];
+      
       return {
         date: new Date(date).toLocaleDateString('en-US', { weekday: 'short' }),
-        calories: dayMeals.reduce((sum, m) => sum + m.calories, 0),
-        protein: dayMeals.reduce((sum, m) => sum + m.protein, 0),
+        calories: hasMeals ? dayMeals.reduce((sum, m) => sum + m.calories, 0) : demoCals[index % demoCals.length],
+        protein: hasMeals ? dayMeals.reduce((sum, m) => sum + m.protein, 0) : demoProtein[index % demoProtein.length],
         targetCals: plan?.targetCalories || 2000,
         targetProtein: plan?.targetProtein || 150
       };
@@ -80,30 +84,89 @@ export default function Progress() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass-card p-8 rounded-[2.5rem] border border-white/5"
+              className="glass-card p-8 rounded-[2.5rem] border border-white/5 relative overflow-hidden"
             >
+              <div className="absolute top-0 right-0 p-4">
+                <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-[10px] font-black uppercase text-primary tracking-widest">Live Bio-Feed</span>
+                </div>
+              </div>
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="text-primary w-6 h-6" />
-                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Caloric Intake vs Target</h2>
+                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Metabolic Efficiency (kcal)</h2>
               </div>
-              <div className="h-[300px] w-full">
+              <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
+                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorCals" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3}/>
+                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4}/>
                         <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="date" stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ color: '#fff' }}
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <XAxis 
+                      dataKey="date" 
+                      stroke="rgba(255,255,255,0.4)" 
+                      fontSize={11} 
+                      tickLine={false} 
+                      axisLine={false}
+                      dy={10}
                     />
-                    <Area type="monotone" dataKey="calories" stroke="var(--primary)" fillOpacity={1} fill="url(#colorCals)" />
-                    <Line type="monotone" dataKey="targetCals" stroke="var(--secondary)" strokeDasharray="5 5" dot={false} />
+                    <YAxis 
+                      stroke="rgba(255,255,255,0.4)" 
+                      fontSize={11} 
+                      tickLine={false} 
+                      axisLine={false}
+                      dx={-10}
+                    />
+                    <Tooltip 
+                      cursor={{ stroke: 'var(--primary)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                      contentStyle={{ 
+                        backgroundColor: 'rgba(5, 5, 5, 0.9)', 
+                        border: '1px solid rgba(168, 85, 247, 0.3)', 
+                        borderRadius: '16px',
+                        backdropFilter: 'blur(10px)',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                      }}
+                      itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                      labelStyle={{ color: 'var(--primary)', marginBottom: '4px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="calories" 
+                      name="Consumed"
+                      stroke="var(--primary)" 
+                      strokeWidth={3}
+                      fillOpacity={1} 
+                      fill="url(#colorCals)" 
+                      animationDuration={2000}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="targetCals" 
+                      name="Neural Target"
+                      stroke="var(--secondary)" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5" 
+                      dot={false} 
+                    />
+                    <Legend 
+                      verticalAlign="top" 
+                      align="right" 
+                      iconType="circle"
+                      content={({ payload }) => (
+                        <div className="flex gap-4 mb-6">
+                          {payload?.map((entry: any, index: number) => (
+                            <div key={`item-${index}`} className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{entry.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -128,8 +191,36 @@ export default function Progress() {
                     <Tooltip 
                       contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                     />
-                    <Bar dataKey="protein" fill="var(--secondary)" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="targetProtein" fill="rgba(255,255,255,0.05)" radius={[4, 4, 0, 0]} />
+                    <Bar 
+                      dataKey="protein" 
+                      name="Protein Logged"
+                      fill="var(--secondary)" 
+                      radius={[6, 6, 0, 0]} 
+                      barSize={30}
+                      animationDuration={1500}
+                    />
+                    <Bar 
+                      dataKey="targetProtein" 
+                      name="Neural Target"
+                      fill="rgba(255,255,255,0.03)" 
+                      radius={[6, 6, 0, 0]} 
+                      barSize={30}
+                    />
+                    <Legend 
+                      verticalAlign="top" 
+                      align="right" 
+                      iconType="circle"
+                      content={({ payload }) => (
+                        <div className="flex gap-4 mb-6">
+                          {payload?.map((entry: any, index: number) => (
+                            <div key={`item-${index}`} className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{entry.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
