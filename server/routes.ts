@@ -3,7 +3,7 @@ import type { Server } from "node:http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import engine, { generatePlan } from "./engine";
+import { generatePlan } from "./engine";
 
 // Engine initialized in engine.ts
 

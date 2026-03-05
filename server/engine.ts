@@ -1,31 +1,25 @@
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-let aiClient: OpenAI;
-let modelName: string;
-let providerName: string;
+let provider: "openai" | "gemini" | "none" = "none";
+let openaiClient: OpenAI | null = null;
+let geminiModel: any = null;
 
 if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-  aiClient = new OpenAI({
+  openaiClient = new OpenAI({
     apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
     baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
   });
-  modelName = "gpt-4o";
-  providerName = "OpenAI";
+  provider = "openai";
+  console.log("AI Provider: OpenAI (GPT-4o)");
 } else if (process.env.GEMINI_API_KEY) {
-  aiClient = new OpenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
-  });
-  modelName = "gemini-2.0-flash";
-  providerName = "Google Gemini";
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  geminiModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  provider = "gemini";
+  console.log("AI Provider: Google Gemini (2.0 Flash - Free)");
 } else {
-  aiClient = null as any;
-  modelName = "";
-  providerName = "None";
   console.warn("No AI API key found. Set GEMINI_API_KEY for free local use.");
 }
-
-console.log(`AI Provider: ${providerName} | Model: ${modelName || "fallback"}`);
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -90,17 +84,44 @@ function generateRandomPlan(): string {
   return JSON.stringify({ week });
 }
 
-async function callWithRetry(prompt: string, retries = 3): Promise<string> {
+async function callGemini(prompt: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await aiClient.chat.completions.create({
-        model: modelName,
+      const result = await geminiModel.generateContent(prompt);
+      const text = result.response.text();
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        JSON.parse(jsonMatch[0]);
+        return jsonMatch[0];
+      }
+      console.warn("Gemini response was not valid JSON, using randomized plan.");
+      return generateRandomPlan();
+    } catch (err: any) {
+      console.warn(`Gemini attempt ${attempt}/${retries} failed:`, err?.message || err);
+      if (attempt < retries) {
+        const delay = attempt * 5000;
+        console.warn(`Retrying in ${delay / 1000}s...`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      console.warn("All Gemini attempts failed. Using randomized fitness data.");
+      return generateRandomPlan();
+    }
+  }
+  return generateRandomPlan();
+}
+
+async function callOpenAI(prompt: string, retries = 3): Promise<string> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await openaiClient!.chat.completions.create({
+        model: "gpt-4o",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
       return response.choices[0]?.message?.content ?? generateRandomPlan();
     } catch (err: any) {
-      console.warn(`AI attempt ${attempt}/${retries} failed:`, err?.status || err?.message);
+      console.warn(`OpenAI attempt ${attempt}/${retries} failed:`, err?.status || err?.message);
       if (err?.status === 429 && attempt < retries) {
         const delay = attempt * 5000;
         console.warn(`Rate limited. Retrying in ${delay / 1000}s...`);
@@ -108,7 +129,7 @@ async function callWithRetry(prompt: string, retries = 3): Promise<string> {
         continue;
       }
       if (attempt === retries) {
-        console.warn("All AI attempts failed. Using randomized fitness data.");
+        console.warn("All OpenAI attempts failed. Using randomized fitness data.");
         return generateRandomPlan();
       }
     }
@@ -117,10 +138,12 @@ async function callWithRetry(prompt: string, retries = 3): Promise<string> {
 }
 
 export async function generatePlan(prompt: string) {
-  if (!aiClient) {
-    return generateRandomPlan();
+  if (provider === "gemini") {
+    return callGemini(prompt);
+  } else if (provider === "openai") {
+    return callOpenAI(prompt);
   }
-  return callWithRetry(prompt);
+  return generateRandomPlan();
 }
 
-export default aiClient;
+export default { provider };
