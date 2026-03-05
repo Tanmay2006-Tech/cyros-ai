@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Layout } from "@/components/Layout";
 import { useMeals } from "@/hooks/use-meals";
-import { useLatestPlan } from "@/hooks/use-plans";
+import { useLatestPlan } from "@/hooks/use-data";
 import { 
   LineChart, 
   Line, 

@@ -3,12 +3,9 @@ import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
-import OpenAI from "openai";
+import engine, { generatePlan } from "./engine";
 
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+// Engine initialized in engine.ts
 
 // Helper for seeding the mock user and initial data if not exists
 async function ensureSeedData() {
@@ -119,13 +116,9 @@ export async function registerRoutes(
         - Keep workout names concise.
       `;
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
-      });
+      const content = await generatePlan(prompt);
 
-      const content = response.choices[0]?.message?.content;
+      
       if (!content) {
         throw new Error("No response from AI");
       }

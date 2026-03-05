@@ -1,5 +1,5 @@
 import { useMeals, useCreateMeal, useDeleteMeal } from "@/hooks/use-meals";
-import { useLatestPlan } from "@/hooks/use-plans";
+import { useLatestPlan } from "@/hooks/use-data";
 import { Layout } from "@/components/Layout";
 import { ProgressBar } from "@/components/ProgressBar";
 import { useToast } from "@/hooks/use-toast";

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useUser, useUpdateUser } from "@/hooks/use-users";
-import { useGeneratePlan } from "@/hooks/use-plans";
+import { useGeneratePlan } from "@/hooks/use-data";
 import { Layout } from "@/components/Layout";
 import { useToast } from "@/hooks/use-toast";
 import { FormEvent } from "react";

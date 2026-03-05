@@ -1,4 +1,4 @@
-import { useLatestPlan } from "@/hooks/use-plans";
+import { useLatestPlan } from "@/hooks/use-data";
 import { useMeals } from "@/hooks/use-meals";
 import { useUser } from "@/hooks/use-users";
 import { Link } from "wouter";

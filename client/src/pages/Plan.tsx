@@ -1,4 +1,4 @@
-import { useLatestPlan } from "@/hooks/use-plans";
+import { useLatestPlan } from "@/hooks/use-data";
 import { Layout } from "@/components/Layout";
 import { Dumbbell, Utensils, Target, ArrowRight, Flame, Zap, Droplets, Info, CheckCircle2, Award, Star } from "lucide-react";
 import { Link } from "wouter";
