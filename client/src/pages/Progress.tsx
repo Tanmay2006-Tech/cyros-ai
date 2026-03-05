@@ -105,30 +105,28 @@ export default function Progress() {
                         <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
                     <XAxis 
                       dataKey="date" 
-                      stroke="rgba(255,255,255,0.4)" 
+                      stroke="rgba(255,255,255,0.6)" 
                       fontSize={11} 
                       tickLine={false} 
                       axisLine={false}
                       dy={10}
                     />
                     <YAxis 
-                      stroke="rgba(255,255,255,0.4)" 
+                      stroke="rgba(255,255,255,0.6)" 
                       fontSize={11} 
                       tickLine={false} 
                       axisLine={false}
                       dx={-10}
                     />
                     <Tooltip 
-                      cursor={{ stroke: 'var(--primary)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                      cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1 }}
                       contentStyle={{ 
-                        backgroundColor: 'rgba(5, 5, 5, 0.9)', 
-                        border: '1px solid rgba(168, 85, 247, 0.3)', 
-                        borderRadius: '16px',
-                        backdropFilter: 'blur(10px)',
-                        boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                        backgroundColor: '#111', 
+                        border: '1px solid rgba(255, 255, 255, 0.1)', 
+                        borderRadius: '12px',
                       }}
                       itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
                       labelStyle={{ color: 'var(--primary)', marginBottom: '4px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' }}
@@ -138,7 +136,7 @@ export default function Progress() {
                       dataKey="calories" 
                       name="Consumed"
                       stroke="var(--primary)" 
-                      strokeWidth={3}
+                      strokeWidth={4}
                       fillOpacity={1} 
                       fill="url(#colorCals)" 
                       animationDuration={2000}
@@ -148,9 +146,9 @@ export default function Progress() {
                       dataKey="targetCals" 
                       name="Neural Target"
                       stroke="var(--secondary)" 
-                      strokeWidth={2}
-                      strokeDasharray="5 5" 
-                      dot={false} 
+                      strokeWidth={3}
+                      strokeDasharray="8 4" 
+                      dot={{ r: 4, fill: 'var(--secondary)', strokeWidth: 0 }} 
                     />
                     <Legend 
                       verticalAlign="top" 
@@ -187,24 +185,24 @@ export default function Progress() {
                   <BarChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="rgba(255,255,255,0.6)" fontSize={12} tickLine={false} axisLine={false} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                     />
                     <Bar 
                       dataKey="protein" 
                       name="Protein Logged"
                       fill="var(--secondary)" 
                       radius={[6, 6, 0, 0]} 
-                      barSize={30}
+                      barSize={40}
                       animationDuration={1500}
                     />
                     <Bar 
                       dataKey="targetProtein" 
                       name="Neural Target"
-                      fill="rgba(255,255,255,0.03)" 
+                      fill="rgba(255,255,255,0.1)" 
                       radius={[6, 6, 0, 0]} 
-                      barSize={30}
+                      barSize={40}
                     />
                     <Legend 
                       verticalAlign="top" 
