@@ -1,12 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { Home, User, Target, Activity, Trophy } from "lucide-react";
+import { Home, User, Target, Activity, Trophy, BarChart2 } from "lucide-react";
 import { ReactNode } from "react";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
   { href: "/nutrition", icon: Activity, label: "Nutrition" },
   { href: "/plan", icon: Target, label: "Plan" },
-  { href: "/challenges", icon: Trophy, label: "Challenges" },
+  { href: "/progress", icon: BarChart2, label: "Analytics" },
+  { href: "/challenges", icon: Trophy, label: "Elite" },
   { href: "/profile", icon: User, label: "Profile" },
 ];
 
