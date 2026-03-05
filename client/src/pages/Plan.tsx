@@ -94,8 +94,14 @@ export default function Plan() {
               Biometric Calibration // Week 01 // XP: {xp}
             </p>
           </div>
-          <div className="inline-flex items-center bg-primary/20 text-primary px-6 py-3 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] tracking-widest uppercase italic">
-            Active Neural Plan
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Last Sync</div>
+              <div className="text-xs font-bold text-primary italic">0.2ms ago</div>
+            </div>
+            <div className="inline-flex items-center bg-primary/20 text-primary px-6 py-3 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] tracking-widest uppercase italic">
+              Active Neural Plan
+            </div>
           </div>
         </header>
 

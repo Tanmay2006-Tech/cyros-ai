@@ -57,13 +57,21 @@ export default function Progress() {
   return (
     <Layout>
       <div className="max-w-[1100px] mx-auto py-8 space-y-12 pb-24">
-        <header>
-          <h1 className="text-5xl font-display font-black text-gradient uppercase italic tracking-tighter mb-4">
-            Performance Analytics
-          </h1>
-          <p className="text-muted-foreground uppercase tracking-[0.3em] text-sm font-bold opacity-70">
-            Biometric Data Visualization // Neural Rank
-          </p>
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-5xl font-display font-black text-gradient uppercase italic tracking-tighter mb-4">
+              Performance Analytics
+            </h1>
+            <p className="text-muted-foreground uppercase tracking-[0.3em] text-sm font-bold opacity-70">
+              Biometric Data Visualization // Neural Rank
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <div className="glass-card px-6 py-4 rounded-2xl border border-primary/20 bg-primary/5">
+              <div className="text-[10px] uppercase font-black tracking-widest text-primary mb-1">Average Accuracy</div>
+              <div className="text-2xl font-display font-black italic text-white">98.4%</div>
+            </div>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
