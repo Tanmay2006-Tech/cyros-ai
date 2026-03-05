@@ -2,7 +2,7 @@ import "dotenv/config";
   import express, { type Request, Response, NextFunction } from "express";
   import { registerRoutes } from "./routes";
   import { setupVite, serveStatic, log } from "./vite";
-  import http from "http";
+  import http from "node:http";
 
   const app = express();
   app.use(express.json());
@@ -16,10 +16,6 @@ import "dotenv/config";
     res.on("finish", () => {
       const duration = Date.now() - start;
       if (path.startsWith("/api") && !resSent) {
-        let resContent = "";
-        const originalWrite = res.write;
-        const originalEnd = res.end;
-        
         let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
         log(logLine);
         resSent = true;
