@@ -4,7 +4,6 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { type Server } from "node:http";
 import * as vite from "vite";
-import react from "@vitejs/plugin-react";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,7 +25,6 @@ export async function setupVite(app: Express, server: Server) {
       hmr: { server },
     },
     appType: "custom",
-    plugins: [react()],
   });
 
   app.use(viteServer.middlewares);
