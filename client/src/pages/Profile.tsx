@@ -82,7 +82,7 @@ export default function Profile() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <form onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden group">
+          <form key={`${user?.age}-${user?.weight}-${user?.height}-${user?.goal}-${user?.activityLevel}`} onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden group" data-testid="form-profile">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[80px] -z-10" />
             
