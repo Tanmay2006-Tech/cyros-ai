@@ -3,9 +3,7 @@ import { defineConfig } from "vite";
   import path from "path";
 
   export default defineConfig({
-    plugins: [
-      react(),
-    ],
+    plugins: [react()],
     resolve: {
       alias: {
         "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -14,20 +12,9 @@ import { defineConfig } from "vite";
       },
     },
     root: path.resolve(import.meta.dirname, "client"),
-    build: {
-      outDir: path.resolve(import.meta.dirname, "dist/public"),
-      emptyOutDir: true,
-    },
     server: {
-      hmr: {
-        overlay: false
-      },
-      fs: {
-        strict: true,
-        deny: ["**/.*"],
-      },
+      hmr: { overlay: false },
+      fs: { strict: false },
     },
-    optimizeDeps: {
-      force: true
-    }
+    optimizeDeps: { force: true }
   });
