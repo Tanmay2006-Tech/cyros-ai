@@ -6,7 +6,7 @@ A cyberpunk-themed AI Diet & Fitness Planner web app built for a 4th-semester st
 ## Architecture
 - **Frontend**: React + Vite, Tailwind CSS, shadcn/ui, wouter routing
 - **Backend**: Express 5, Node.js, PostgreSQL (Drizzle ORM)
-- **AI**: OpenAI gpt-4o via Replit AI Integrations (env vars: `AI_INTEGRATIONS_OPENAI_API_KEY`, `AI_INTEGRATIONS_OPENAI_BASE_URL`)
+- **AI**: OpenAI gpt-4o via Replit AI Integrations on Replit; Google Gemini 2.0 Flash (free) for local use via `GEMINI_API_KEY`
 - **Design**: Cyberpunk — neon purple, cyan, hot pink; dark bg `#050505`; Outfit font
 
 ## Key Files

@@ -7,7 +7,7 @@ A cyberpunk-themed AI-powered diet and fitness planning web application.
 - **Frontend**: React + Vite + TailwindCSS + Framer Motion
 - **Backend**: Node.js + Express 5
 - **Database**: PostgreSQL + Drizzle ORM
-- **AI**: OpenAI GPT-4o
+- **AI**: Google Gemini 2.0 Flash (FREE)
 
 ## Prerequisites
 
@@ -16,7 +16,14 @@ A cyberpunk-themed AI-powered diet and fitness planning web application.
 
 ## Setup
 
-### 1. Create the Database
+### 1. Get a Free Gemini API Key
+
+1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
+2. Sign in with your Google account
+3. Click **"Create API Key"**
+4. Copy the key
+
+### 2. Create the Database
 
 Open pgAdmin or a terminal and create a new database:
 
@@ -24,7 +31,7 @@ Open pgAdmin or a terminal and create a new database:
 CREATE DATABASE cyros_db;
 ```
 
-### 2. Create Environment File
+### 3. Create Environment File
 
 Copy `.env.example` to `.env` and fill in your values:
 
@@ -32,29 +39,29 @@ Copy `.env.example` to `.env` and fill in your values:
 cp .env.example .env
 ```
 
-Edit `.env` with your database credentials and OpenAI API key:
+Edit `.env` with your database credentials and Gemini API key:
 
 ```
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
 SESSION_SECRET=cyros_super_secret
-OPENAI_API_KEY=your_openai_api_key
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-> The app works without an OpenAI key — it will use sample fitness data instead.
+> The app works without an API key too — it will use sample fitness data instead.
 
-### 3. Install Dependencies
+### 4. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 4. Push Database Schema
+### 5. Push Database Schema
 
 ```bash
 npm run db:push
 ```
 
-### 5. Start the App
+### 6. Start the App
 
 ```bash
 npm run dev
