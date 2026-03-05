@@ -3,9 +3,7 @@ import express, { type Express } from "express";
   import path, { dirname } from "node:path";
   import { fileURLToPath } from "node:url";
   import { type Server } from "node:http";
-  import vite_module from "vite";
-  const { createServer: createViteServer, createLogger } = vite_module;
-  import { type ServerOptions } from "./index";
+  import * as vite from "vite";
   import react from "@vitejs/plugin-react";
 
   const __filename = fileURLToPath(import.meta.url);
@@ -22,7 +20,7 @@ import express, { type Express } from "express";
   };
 
   export async function setupVite(app: Express, server: Server) {
-    const vite = await createViteServer({
+    const viteServer = await vite.createServer({
       server: {
         middlewareMode: true,
         hmr: { server },
@@ -31,17 +29,17 @@ import express, { type Express } from "express";
       plugins: [react()],
     });
 
-    app.use(vite.middlewares);
+    app.use(viteServer.middlewares);
     app.use("*", async (req, res, next) => {
       const url = req.originalUrl;
 
       try {
         const clientIndex = path.resolve(__dirname, "..", "client", "index.html");
         const template = await fs.promises.readFile(clientIndex, "utf-8");
-        const html = await vite.transformIndexHtml(url, template);
+        const html = await viteServer.transformIndexHtml(url, template);
         res.status(200).set({ "Content-Type": "text/html" }).end(html);
       } catch (e) {
-        vite.ssrFixStacktrace(e as Error);
+        viteServer.ssrFixStacktrace(e as Error);
         next(e);
       }
     });
@@ -58,7 +56,6 @@ import express, { type Express } from "express";
 
     app.use(express.static(distPath));
 
-    // fall through to index.html
     app.use("*", (_req, res) => {
       res.sendFile(path.resolve(distPath, "index.html"));
     });
