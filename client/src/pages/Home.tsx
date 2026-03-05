@@ -46,7 +46,7 @@ export default function Home() {
           </h1>
           <div className="flex items-center gap-4 mt-2">
             <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.3em] opacity-70">
-              System Status: <span className="text-primary animate-pulse">Optimal</span> // Neural Link Active
+              Status: <span className="text-primary animate-pulse">Optimal</span> // System Online
             </p>
             <div className="h-1 w-24 bg-white/5 rounded-full overflow-hidden hidden sm:block">
               <motion.div 
@@ -60,7 +60,7 @@ export default function Home() {
         </div>
         <div className="hidden md:flex gap-4">
           <div className="px-6 py-3 bg-primary/10 border border-primary/30 rounded-2xl backdrop-blur-sm">
-            <div className="text-[10px] uppercase font-black tracking-widest text-primary mb-1">Neural Rank</div>
+            <div className="text-[10px] uppercase font-black tracking-widest text-primary mb-1">Leaderboard Rank</div>
             <div className="text-xl font-display font-black italic uppercase text-white">#1 Global</div>
           </div>
           <div className="px-6 py-3 bg-secondary/10 border border-secondary/30 rounded-2xl backdrop-blur-sm">
@@ -74,7 +74,7 @@ export default function Home() {
         <div className="glass-card rounded-[2rem] p-8 md:p-12 text-center relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <Target className="w-16 h-16 text-primary mx-auto mb-6" />
-          <h2 className="text-2xl font-display font-bold text-foreground mb-4">No AI Plan Yet</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground mb-4">No Plan Yet</h2>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
             Set up your health profile and let our AI generate a personalized diet and workout routine for you.
           </p>
@@ -96,7 +96,7 @@ export default function Home() {
               <div>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="h-1 w-8 bg-primary rounded-full" />
-                  <span className="text-[10px] uppercase font-black tracking-[0.4em] text-primary">Biometric Overview</span>
+                  <span className="text-[10px] uppercase font-black tracking-[0.4em] text-primary">Health Overview</span>
                 </div>
                 <h2 className="text-3xl font-display font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
                   <Flame className="text-accent animate-pulse" /> Health Stats
@@ -111,7 +111,7 @@ export default function Home() {
 
               <div className="pt-4 flex gap-6 border-t border-white/5">
                 <div className="space-y-1">
-                  <div className="text-[8px] uppercase font-black text-muted-foreground tracking-widest">Metabolic Rate</div>
+                  <div className="text-[8px] uppercase font-black text-muted-foreground tracking-widest">Burn Rate</div>
                   <div className="text-sm font-display font-black text-white italic">2,450 kcal/d</div>
                 </div>
                 <div className="space-y-1">
@@ -146,7 +146,7 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Target className="w-6 h-6 text-secondary" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-foreground mb-2">View AI Plan</h3>
+                <h3 className="text-xl font-display font-bold text-foreground mb-2">View Plan</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Review your personalized diet strategy and workout regimen.
                 </p>

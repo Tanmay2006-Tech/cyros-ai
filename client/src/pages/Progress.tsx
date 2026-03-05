@@ -54,7 +54,7 @@ export default function Progress() {
     { name: "Sachin (You)", xp: parseInt(localStorage.getItem("cyros_xp") || "0"), isUser: true },
     { name: "Alex_Neo", xp: 2850, isUser: false },
     { name: "Cyber_Groot", xp: 2100, isUser: false },
-    { name: "Neural_Link", xp: 1850, isUser: false },
+    { name: "Personal_Link", xp: 1850, isUser: false },
     { name: "V_Phantom", xp: 1200, isUser: false },
   ].sort((a, b) => b.xp - a.xp);
 
@@ -67,7 +67,7 @@ export default function Progress() {
               Performance Analytics
             </h1>
             <p className="text-muted-foreground uppercase tracking-[0.3em] text-sm font-bold opacity-70">
-              Biometric Data Visualization // Neural Rank
+              Health Data Visualization // Leaderboard Rank
             </p>
           </div>
           <div className="flex gap-4">
@@ -276,7 +276,7 @@ export default function Progress() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 text-primary">
                     <Activity className="w-5 h-5" />
-                    <span className="text-xs font-black uppercase tracking-widest italic">Rank: Alpha-1</span>
+                    <span className="text-xs font-black uppercase tracking-widest italic">Rank: Pro</span>
                   </div>
                   <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                     Top 0.01%

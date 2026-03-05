@@ -45,12 +45,12 @@ export default function Plan() {
       <Layout>
         <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-md mx-auto">
           <Target className="w-20 h-20 text-muted-foreground mb-6" />
-          <h2 className="text-3xl font-display font-bold mb-4 text-foreground uppercase italic tracking-tighter">No Protocol Active</h2>
+          <h2 className="text-3xl font-display font-bold mb-4 text-foreground uppercase italic tracking-tighter">No Plan Active</h2>
           <p className="text-muted-foreground mb-8 text-lg">
-            Initialize your profile to generate your AI-optimized fitness operating system.
+            Start your profile to generate your optimized fitness operating system.
           </p>
           <Link href="/profile" className="px-8 py-4 bg-primary text-primary-foreground font-black uppercase italic rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all inline-flex items-center gap-2">
-            Initialize System <ArrowRight className="w-5 h-5" />
+            Get Started <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </Layout>
@@ -100,7 +100,7 @@ export default function Plan() {
               <div className="text-xs font-bold text-primary italic">0.2ms ago</div>
             </div>
             <div className="inline-flex items-center bg-primary/20 text-primary px-6 py-3 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] tracking-widest uppercase italic">
-              Active Neural Plan
+              Active Active Plan
             </div>
           </div>
         </header>
@@ -133,14 +133,14 @@ export default function Plan() {
                 {/* Workout Grid */}
                 <div className="space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Dumbbell className="w-4 h-4 text-secondary" /> Workout Matrix
+                    <Dumbbell className="w-4 h-4 text-secondary" /> Workout Workout
                   </h3>
                   <div className="grid gap-3">
                     {day.workout.map((ex: any, i: number) => (
                       <div key={i} className="glass-card p-5 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-secondary/30 transition-all hover:bg-white/5">
                         <div>
                           <div className="font-display font-black uppercase italic tracking-tight text-foreground group-hover:text-secondary transition-colors">{ex.name}</div>
-                          <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-0.5">Ref ID: {idx}{i}</div>
+                          <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-0.5">ID: {idx}{i}</div>
                         </div>
                         <div className="text-right">
                           <div className="text-lg font-display font-black italic tracking-tighter text-foreground">{ex.sets}</div>
@@ -154,7 +154,7 @@ export default function Plan() {
                 {/* Challenges & Progress */}
                 <div className="space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Star className="w-4 h-4 text-primary" /> Neural Challenges
+                    <Star className="w-4 h-4 text-primary" /> Daily Challenges
                   </h3>
                   <div className="glass-card p-8 rounded-[2rem] border border-white/5 space-y-6 h-full bg-gradient-to-br from-primary/5 to-transparent">
                     {day.challenges.map((c: string, i: number) => (
@@ -175,7 +175,7 @@ export default function Plan() {
                     ))}
                     <div className="pt-6 border-t border-white/5">
                       <div className="flex justify-between text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-2">
-                        <span>Daily Synchronization</span>
+                        <span>Daily Sync</span>
                         <span className="text-primary">Ready</span>
                       </div>
                       <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">

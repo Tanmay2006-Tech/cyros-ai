@@ -58,7 +58,7 @@ export default function Profile() {
       await new Promise(resolve => setTimeout(resolve, 3000));
       await generateMutation.mutateAsync();
       toast({
-        title: "Protocol Initialized",
+        title: "Plan Startd",
         description: "Your fitness plan has been synchronized.",
       });
       setLocation("/plan");
@@ -77,7 +77,7 @@ export default function Profile() {
     <Layout>
       <header className="mb-10 mt-2">
         <h1 className="text-4xl font-display font-bold text-gradient mb-2 uppercase italic tracking-tighter">Health Profile</h1>
-        <p className="text-muted-foreground uppercase tracking-widest text-[10px] font-bold opacity-70">Initialize Biometric Data // System ID: {user?.id}</p>
+        <p className="text-muted-foreground uppercase tracking-widest text-[10px] font-bold opacity-70">Start Health Data // System ID: {user?.id}</p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -182,8 +182,8 @@ export default function Profile() {
                     />
                     <Activity className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
                   </div>
-                  <h4 className="text-xl font-display font-black uppercase italic text-white mb-2">Neural Scan</h4>
-                  <p className="text-xs text-primary font-bold uppercase tracking-widest animate-pulse">Analyzing Bio-Metrics...</p>
+                  <h4 className="text-xl font-display font-black uppercase italic text-white mb-2">Profile Scan</h4>
+                  <p className="text-xs text-primary font-bold uppercase tracking-widest animate-pulse">Analyzing Health Metrics...</p>
                   
                   <div className="mt-8 w-full max-w-[200px] h-1 bg-white/10 rounded-full overflow-hidden">
                     <motion.div 
@@ -201,7 +201,7 @@ export default function Profile() {
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-emerald-400 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-500">
               <Sparkles className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h3 className="text-xl font-display font-bold text-foreground mb-3 uppercase italic">AI Intelligence</h3>
+            <h3 className="text-xl font-display font-bold text-foreground mb-3 uppercase italic">Smart Planner</h3>
             <p className="text-muted-foreground text-sm leading-relaxed mb-8 font-medium">
               Synchronize your metrics to initialize a high-performance fitness protocol.
             </p>
@@ -216,7 +216,7 @@ export default function Profile() {
                   <Loader2 className="w-5 h-5 animate-spin" /> Syncing...
                 </>
               ) : (
-                "Initialize Plan"
+                "Create Plan"
               )}
             </button>
             {!user?.weight && (
