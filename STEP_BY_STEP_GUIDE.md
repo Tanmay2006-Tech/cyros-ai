@@ -46,3 +46,7 @@ Open your browser and go to:
 
 ---
 **Exhibition Tip:** If the internet is slow, the "Plan Generation" might fail. Ensure your OpenAI API key is active and has credits!
+
+
+### Troubleshooting: Windows "NODE_ENV" Error
+If you see an error about `NODE_ENV`, I have already updated `package.json` to work on Windows by default. Just run `npm run dev` again.
