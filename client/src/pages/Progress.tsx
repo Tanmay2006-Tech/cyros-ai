@@ -149,25 +149,37 @@ export default function Progress() {
               </div>
               <div className="space-y-4">
                 {leaderboard.map((player, i) => (
-                  <div 
+                  <motion.div 
                     key={player.name} 
-                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className={`flex items-center justify-between p-4 rounded-2xl border transition-all hover:scale-[1.02] cursor-default ${
                       player.isUser 
-                        ? 'bg-primary/20 border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
+                        ? 'bg-primary/20 border-primary/50 shadow-[0_0_20px_rgba(168,85,247,0.25)]' 
                         : 'bg-white/5 border-white/5'
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <span className={`font-display font-black italic text-lg ${i === 0 ? 'text-primary' : 'text-muted-foreground'}`}>
-                        #{i + 1}
-                      </span>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-display font-black italic text-sm ${
+                        i === 0 ? 'bg-primary text-white shadow-[0_0_10px_rgba(168,85,247,0.5)]' : 'bg-white/5 text-muted-foreground'
+                      }`}>
+                        {i + 1}
+                      </div>
                       <div>
-                        <div className="font-bold text-sm uppercase tracking-tight">{player.name}</div>
-                        <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{player.xp} XP</div>
+                        <div className="font-bold text-sm uppercase tracking-tight flex items-center gap-2">
+                          {player.name}
+                          {player.isUser && <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{player.xp.toLocaleString()} XP</div>
                       </div>
                     </div>
-                    {i === 0 && <Trophy className="w-4 h-4 text-primary animate-bounce" />}
-                  </div>
+                    {i === 0 ? (
+                      <Trophy className="w-4 h-4 text-primary animate-bounce" />
+                    ) : (
+                      <div className="text-[10px] font-black text-muted-foreground/30 italic">#{i+1}</div>
+                    )}
+                  </motion.div>
                 ))}
               </div>
               

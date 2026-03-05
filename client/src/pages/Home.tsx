@@ -88,21 +88,36 @@ export default function Home() {
       ) : (
         <div className="space-y-8">
           {/* Main Ring Card */}
-          <div className="glass-card rounded-[2rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
+          <div className="glass-card rounded-[2rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-50" />
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] group-hover:bg-primary/20 transition-all duration-700" />
             
-            <div className="flex-1 w-full space-y-6">
+            <div className="flex-1 w-full space-y-8 relative z-10">
               <div>
-                <h2 className="text-2xl font-display font-bold text-foreground flex items-center gap-3">
-                  <Flame className="text-accent" /> Daily Activity
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="h-1 w-8 bg-primary rounded-full" />
+                  <span className="text-[10px] uppercase font-black tracking-[0.4em] text-primary">Biometric Overview</span>
+                </div>
+                <h2 className="text-3xl font-display font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
+                  <Flame className="text-accent animate-pulse" /> Neural Vitality
                 </h2>
-                <p className="text-muted-foreground mt-1">You're making great progress today.</p>
               </div>
               
-              <div className="space-y-5">
-                <ProgressBar value={totalProtein} max={plan.targetProtein} label="Protein" color="bg-secondary" formatter={(v) => `${v}g`} />
-                <ProgressBar value={totalCarbs} max={plan.targetCarbs} label="Carbs" color="bg-primary" formatter={(v) => `${v}g`} />
-                <ProgressBar value={totalFat} max={plan.targetFat} label="Fat" color="bg-accent" formatter={(v) => `${v}g`} />
+              <div className="grid gap-6">
+                <ProgressBar value={totalProtein} max={plan.targetProtein} label="Protein Synthesis" color="bg-secondary" formatter={(v) => `${v}g`} />
+                <ProgressBar value={totalCarbs} max={plan.targetCarbs} label="Glycogen Load" color="bg-primary" formatter={(v) => `${v}g`} />
+                <ProgressBar value={totalFat} max={plan.targetFat} label="Lipid Reserve" color="bg-accent" formatter={(v) => `${v}g`} />
+              </div>
+
+              <div className="pt-4 flex gap-6 border-t border-white/5">
+                <div className="space-y-1">
+                  <div className="text-[8px] uppercase font-black text-muted-foreground tracking-widest">Metabolic Rate</div>
+                  <div className="text-sm font-display font-black text-white italic">2,450 kcal/d</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-[8px] uppercase font-black text-muted-foreground tracking-widest">Hydration Level</div>
+                  <div className="text-sm font-display font-black text-secondary italic">88% Optimal</div>
+                </div>
               </div>
             </div>
 

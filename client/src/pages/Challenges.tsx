@@ -36,28 +36,37 @@ export default function Challenges() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
+            <motion.div 
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group"
+            >
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -z-10 group-hover:bg-primary/20 transition-all" />
               <Zap className="w-10 h-10 text-primary mb-4" />
-              <div className="text-4xl font-display font-black italic tracking-tighter mb-1">{xp}</div>
+              <div className="text-4xl font-display font-black italic tracking-tighter mb-1">{xp.toLocaleString()}</div>
               <div className="text-xs uppercase font-black tracking-widest text-muted-foreground">Total XP</div>
-            </div>
+            </motion.div>
 
-            <div className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
+            <motion.div 
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group"
+            >
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -z-10 group-hover:bg-orange-500/20 transition-all" />
               <Flame className="w-10 h-10 text-orange-500 mb-4" />
               <div className="text-4xl font-display font-black italic tracking-tighter mb-1">{streak}</div>
               <div className="text-xs uppercase font-black tracking-widest text-muted-foreground">Day Streak</div>
-            </div>
+            </motion.div>
 
-            <div className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group">
+            <motion.div 
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="glass-card p-8 rounded-[2rem] border border-white/5 relative overflow-hidden group"
+            >
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl -z-10 group-hover:bg-accent/20 transition-all" />
               <tier.icon className={`w-10 h-10 ${tier.color} mb-4`} />
               <div className={`text-4xl font-display font-black italic tracking-tighter mb-1 ${tier.color}`}>
                 {tier.name}
               </div>
               <div className="text-xs uppercase font-black tracking-widest text-muted-foreground">Current Tier</div>
-            </div>
+            </motion.div>
           </div>
 
           <div className="glass-card p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden">
