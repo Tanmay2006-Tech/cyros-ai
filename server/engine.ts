@@ -93,7 +93,7 @@ async function callOpenRouter(prompt: string, retries = 3): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const response = await openaiClient!.chat.completions.create({
-        model: "deepseek/deepseek-r1-0528:free",
+        model: "google/gemini-2.0-flash-exp:free",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
       });
