@@ -47,7 +47,7 @@ export default function Progress() {
 
   // Mock Leaderboard Data
   const leaderboard = [
-    { name: "Sachin", xp: parseInt(localStorage.getItem("cyros_xp") || "0"), isUser: true },
+    { name: "Sachin (You)", xp: parseInt(localStorage.getItem("cyros_xp") || "0"), isUser: true },
     { name: "Alex_Neo", xp: 2850, isUser: false },
     { name: "Cyber_Groot", xp: 2100, isUser: false },
     { name: "Neural_Link", xp: 1850, isUser: false },
@@ -150,7 +150,7 @@ export default function Progress() {
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <span className={`font-display font-black italic text-lg ${i < 3 ? 'text-primary' : 'text-muted-foreground'}`}>
+                      <span className={`font-display font-black italic text-lg ${i === 0 ? 'text-primary' : 'text-muted-foreground'}`}>
                         #{i + 1}
                       </span>
                       <div>
@@ -158,15 +158,20 @@ export default function Progress() {
                         <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{player.xp} XP</div>
                       </div>
                     </div>
-                    {i === 0 && <Trophy className="w-4 h-4 text-yellow-500" />}
+                    {i === 0 && <Trophy className="w-4 h-4 text-primary animate-bounce" />}
                   </div>
                 ))}
               </div>
               
               <div className="mt-8 pt-8 border-t border-white/5">
-                <div className="flex items-center gap-3 text-primary">
-                  <Activity className="w-5 h-5" />
-                  <span className="text-xs font-black uppercase tracking-widest italic">Rank Ascending</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-primary">
+                    <Activity className="w-5 h-5" />
+                    <span className="text-xs font-black uppercase tracking-widest italic">Rank: Alpha-1</span>
+                  </div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                    Top 0.01%
+                  </div>
                 </div>
               </div>
             </motion.div>

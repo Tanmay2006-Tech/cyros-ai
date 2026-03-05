@@ -38,10 +38,21 @@ export default function Home() {
 
   return (
     <Layout>
-      <header className="mb-10 mt-2">
-        <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-2 tracking-tighter italic uppercase">
-          {user?.username ? `YO, ${user.username}` : 'WAKE UP'}
-        </h1>
+      <header className="mb-10 mt-2 flex items-center justify-between">
+        <div>
+          <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-2 tracking-tighter italic uppercase">
+            YO, Sachin
+          </h1>
+          <p className="text-xs text-muted-foreground font-bold uppercase tracking-[0.3em] opacity-70">
+            System Status: Optimal // Neural Link Active
+          </p>
+        </div>
+        <div className="hidden md:block">
+          <div className="px-6 py-3 bg-primary/10 border border-primary/30 rounded-2xl">
+            <div className="text-[10px] uppercase font-black tracking-widest text-primary mb-1">Neural Rank</div>
+            <div className="text-xl font-display font-black italic uppercase text-white">#1 Global</div>
+          </div>
+        </div>
       </header>
 
       {!plan ? (
