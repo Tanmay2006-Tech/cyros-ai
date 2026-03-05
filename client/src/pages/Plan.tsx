@@ -89,9 +89,9 @@ export default function Plan() {
       >
         <header className="mb-12 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Neural Protocol</h1>
+            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Fitness Plan</h1>
             <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-xs opacity-70">
-              Biometric Calibration // Week 01 // XP: {xp}
+              Daily Tracking // Week 01 // XP: {xp}
             </p>
           </div>
           <div className="flex items-center gap-4">

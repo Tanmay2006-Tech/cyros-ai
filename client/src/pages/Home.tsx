@@ -99,14 +99,14 @@ export default function Home() {
                   <span className="text-[10px] uppercase font-black tracking-[0.4em] text-primary">Biometric Overview</span>
                 </div>
                 <h2 className="text-3xl font-display font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
-                  <Flame className="text-accent animate-pulse" /> Neural Vitality
+                  <Flame className="text-accent animate-pulse" /> Health Stats
                 </h2>
               </div>
               
               <div className="grid gap-6">
-                <ProgressBar value={totalProtein} max={plan.targetProtein} label="Protein Synthesis" color="bg-secondary" formatter={(v) => `${v}g`} />
-                <ProgressBar value={totalCarbs} max={plan.targetCarbs} label="Glycogen Load" color="bg-primary" formatter={(v) => `${v}g`} />
-                <ProgressBar value={totalFat} max={plan.targetFat} label="Lipid Reserve" color="bg-accent" formatter={(v) => `${v}g`} />
+                <ProgressBar value={totalProtein} max={plan.targetProtein} label="Protein" color="bg-secondary" formatter={(v) => `${v}g`} />
+                <ProgressBar value={totalCarbs} max={plan.targetCarbs} label="Carbs" color="bg-primary" formatter={(v) => `${v}g`} />
+                <ProgressBar value={totalFat} max={plan.targetFat} label="Fats" color="bg-accent" formatter={(v) => `${v}g`} />
               </div>
 
               <div className="pt-4 flex gap-6 border-t border-white/5">

@@ -89,12 +89,12 @@ export default function Progress() {
               <div className="absolute top-0 right-0 p-4">
                 <div className="flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full">
                   <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-black uppercase text-primary tracking-widest">Live Bio-Feed</span>
+                  <span className="text-[10px] font-black uppercase text-primary tracking-widest">Live Data</span>
                 </div>
               </div>
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="text-primary w-6 h-6" />
-                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Metabolic Efficiency (kcal)</h2>
+                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Calories (kcal)</h2>
               </div>
               <div className="h-[350px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -134,7 +134,7 @@ export default function Progress() {
                     <Area 
                       type="monotone" 
                       dataKey="calories" 
-                      name="Consumed"
+                      name="Logged"
                       stroke="#a855f7" 
                       strokeWidth={4}
                       fillOpacity={1} 
@@ -144,7 +144,7 @@ export default function Progress() {
                     <Line 
                       type="monotone" 
                       dataKey="targetCals" 
-                      name="Neural Target"
+                      name="Target"
                       stroke="#22d3ee" 
                       strokeWidth={3}
                       strokeDasharray="8 4" 
@@ -178,7 +178,7 @@ export default function Progress() {
             >
               <div className="flex items-center gap-3 mb-8">
                 <Zap className="text-secondary w-6 h-6" />
-                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Protein Synthesis</h2>
+                <h2 className="text-xl font-display font-black uppercase italic tracking-tight">Protein Tracking</h2>
               </div>
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -191,7 +191,7 @@ export default function Progress() {
                     />
                     <Bar 
                       dataKey="protein" 
-                      name="Protein Logged"
+                      name="Logged"
                       fill="#22d3ee" 
                       radius={[6, 6, 0, 0]} 
                       barSize={40}
@@ -199,7 +199,7 @@ export default function Progress() {
                     />
                     <Bar 
                       dataKey="targetProtein" 
-                      name="Neural Target"
+                      name="Target"
                       fill="rgba(168, 85, 247, 0.2)" 
                       radius={[6, 6, 0, 0]} 
                       barSize={40}
