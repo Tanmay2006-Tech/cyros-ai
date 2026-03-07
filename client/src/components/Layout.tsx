@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { Home, User, Target, Activity, Trophy, BarChart2, Calculator } from "lucide-react";
 import { ReactNode } from "react";
-import cyrosLogo from "@assets/cyros_logo.png";
+import cyrosLogo from "@assets/ChatGPT_Image_Mar_7,_2026,_11_48_39_AM_1772864328583.png";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
@@ -20,8 +20,8 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans">
       {/* Sidebar (Desktop) */}
       <nav className="hidden md:flex flex-col w-72 bg-black/60 border-r border-white/5 p-6 gap-2 backdrop-blur-md">
-        <div className="mb-10 px-2 flex items-center justify-center">
-          <img src={cyrosLogo} alt="Cyros AI" className="h-20 w-auto object-contain brightness-125" data-testid="img-logo" />
+        <div className="mb-8 flex items-center justify-center">
+          <img src={cyrosLogo} alt="Cyros AI" className="w-full max-w-[220px] h-auto object-contain" data-testid="img-logo" />
         </div>
         
         <div className="space-y-2 flex-1">
