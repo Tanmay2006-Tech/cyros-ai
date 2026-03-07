@@ -8,11 +8,27 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const DAYS_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const DAYS_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 function getCurrentDayIndex(): number {
   const jsDay = new Date().getDay();
   return jsDay === 0 ? 6 : jsDay - 1;
+}
+
+function getWeekDates(): { day: number; month: string }[] {
+  const today = new Date();
+  const jsDay = today.getDay();
+  const mondayOffset = jsDay === 0 ? -6 : 1 - jsDay;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + mondayOffset);
+  
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return {
+      day: d.getDate(),
+      month: d.toLocaleDateString("en-US", { month: "short" }),
+    };
+  });
 }
 
 async function exportPlanToPdf(weekData: any[]) {
@@ -136,6 +152,7 @@ export default function Plan() {
   const [exporting, setExporting] = useState(false);
   const [selectedDay, setSelectedDay] = useState(getCurrentDayIndex());
   const sliderRef = useRef<HTMLDivElement>(null);
+  const weekDates = getWeekDates();
 
   useEffect(() => {
     const storedXp = localStorage.getItem("cyros_xp");
@@ -241,11 +258,12 @@ export default function Plan() {
             {weekData.map((_: any, idx: number) => {
               const isSelected = idx === selectedDay;
               const isToday = idx === todayIndex;
+              const dateInfo = weekDates[idx];
               return (
                 <button
                   key={idx}
                   onClick={() => setSelectedDay(idx)}
-                  className={`relative flex-shrink-0 flex flex-col items-center gap-1 px-5 py-3 rounded-2xl transition-all duration-300 border ${
+                  className={`relative flex-shrink-0 flex flex-col items-center gap-0.5 px-4 py-3 rounded-2xl transition-all duration-300 border min-w-[72px] ${
                     isSelected
                       ? "bg-primary/20 border-primary/60 shadow-[0_0_20px_rgba(168,85,247,0.25)]"
                       : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/10"
@@ -255,8 +273,11 @@ export default function Plan() {
                   <span className={`text-[10px] font-black uppercase tracking-widest ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
                     {DAYS_SHORT[idx]}
                   </span>
-                  <span className={`text-lg font-display font-black ${isSelected ? "text-foreground" : "text-foreground/50"}`}>
-                    {idx + 1}
+                  <span className={`text-xl font-display font-black ${isSelected ? "text-foreground" : "text-foreground/50"}`}>
+                    {dateInfo?.day}
+                  </span>
+                  <span className={`text-[9px] font-bold uppercase tracking-wider ${isSelected ? "text-primary/70" : "text-muted-foreground/50"}`}>
+                    {dateInfo?.month}
                   </span>
                   {isToday && (
                     <div className={`absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-primary" : "bg-emerald-400"}`} />
