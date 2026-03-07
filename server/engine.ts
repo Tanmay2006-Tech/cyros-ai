@@ -53,6 +53,45 @@ const SETS_OPTIONS = ["3x8", "3x10", "3x12", "3x15", "4x6", "4x8", "4x10", "4x12
 const REST_OPTIONS = ["45s", "60s", "90s", "120s"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+const MEAL_OPTIONS = {
+  breakfast: [
+    { name: "Oatmeal with Banana & Whey Protein", calories: 420 },
+    { name: "Scrambled Eggs with Whole Wheat Toast", calories: 380 },
+    { name: "Greek Yogurt Parfait with Granola & Berries", calories: 350 },
+    { name: "Protein Pancakes with Honey", calories: 450 },
+    { name: "Egg White Omelette with Spinach & Cheese", calories: 320 },
+    { name: "Overnight Oats with Chia Seeds & Almonds", calories: 400 },
+    { name: "Avocado Toast with Poached Eggs", calories: 430 },
+  ],
+  lunch: [
+    { name: "Grilled Chicken with Brown Rice & Broccoli", calories: 620 },
+    { name: "Turkey Wrap with Veggies & Hummus", calories: 550 },
+    { name: "Tuna Salad with Quinoa & Avocado", calories: 580 },
+    { name: "Chicken Stir-Fry with Mixed Vegetables", calories: 600 },
+    { name: "Lentil Soup with Whole Grain Bread", calories: 480 },
+    { name: "Grilled Fish Tacos with Slaw", calories: 520 },
+    { name: "Paneer Tikka with Roti & Dal", calories: 650 },
+  ],
+  snack: [
+    { name: "Protein Shake with Peanut Butter", calories: 280 },
+    { name: "Greek Yogurt with Almonds", calories: 220 },
+    { name: "Mixed Nuts & Dried Fruits", calories: 250 },
+    { name: "Apple Slices with Almond Butter", calories: 200 },
+    { name: "Cottage Cheese with Walnuts", calories: 230 },
+    { name: "Protein Bar", calories: 260 },
+    { name: "Boiled Eggs with Hummus", calories: 240 },
+  ],
+  dinner: [
+    { name: "Salmon with Sweet Potato & Spinach", calories: 580 },
+    { name: "Grilled Chicken Breast with Roasted Vegetables", calories: 520 },
+    { name: "Lean Beef Steak with Mashed Potatoes", calories: 650 },
+    { name: "Baked Fish with Quinoa & Asparagus", calories: 500 },
+    { name: "Chicken Curry with Basmati Rice", calories: 620 },
+    { name: "Tofu Stir-Fry with Brown Rice & Bok Choy", calories: 480 },
+    { name: "Egg Bhurji with Chapati & Salad", calories: 550 },
+  ],
+};
+
 function generateRandomPlan(): string {
   const muscleGroups = ["chest", "legs", "recovery", "back", "shoulders", "arms", "recovery"] as const;
   const intensities = ["High", "Moderate", "Recovery", "High", "Moderate", "High", "Recovery"];
@@ -80,10 +119,17 @@ function generateRandomPlan(): string {
       fats: rand(45, 75),
     };
 
+    const meals = [
+      { time: "Breakfast", ...pick(MEAL_OPTIONS.breakfast) },
+      { time: "Lunch", ...pick(MEAL_OPTIONS.lunch) },
+      { time: "Snack", ...pick(MEAL_OPTIONS.snack) },
+      { time: "Dinner", ...pick(MEAL_OPTIONS.dinner) },
+    ];
+
     const shuffledChallenges = [...CHALLENGES].sort(() => Math.random() - 0.5);
     const challenges = shuffledChallenges.slice(0, rand(2, 3));
 
-    return { day, intensity, workout, diet, challenges };
+    return { day, intensity, workout, diet, meals, challenges };
   });
 
   return JSON.stringify({ week });

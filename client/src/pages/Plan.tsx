@@ -84,8 +84,28 @@ async function exportPlanToPdf(weekData: any[]) {
       y += 6;
     }
 
+    if (day.meals && day.meals.length > 0) {
+      y += 2;
+      if (y > 240) { doc.addPage(); y = 20; }
+      doc.setFontSize(8);
+      doc.setTextColor(255, 165, 0);
+      doc.text("DIET PLAN:", 14, y);
+      y += 5;
+      for (const meal of day.meals) {
+        doc.setTextColor(220, 220, 220);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.text(`  ${meal.time}: ${meal.name}`, 18, y);
+        doc.setTextColor(120, 120, 120);
+        doc.setFontSize(8);
+        doc.text(`${meal.calories} kcal`, pageWidth - 14, y, { align: "right" });
+        y += 6;
+      }
+    }
+
     if (day.challenges && day.challenges.length > 0) {
       y += 2;
+      if (y > 240) { doc.addPage(); y = 20; }
       doc.setFontSize(8);
       doc.setTextColor(168, 85, 247);
       doc.text("CHALLENGES:", 14, y);
@@ -185,7 +205,7 @@ export default function Plan() {
       >
         <header className="mb-12 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Fitness Plan</h1>
+            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Fitness & Diet Plan</h1>
             <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-xs opacity-70">
               Daily Tracking // Week 01 // XP: {xp}
             </p>
@@ -233,11 +253,29 @@ export default function Plan() {
                 <MacroStats label="Fats" value={day.diet.fats} unit="g" icon={Info} color="#f97316" />
               </div>
 
+              {/* Meals Section */}
+              {day.meals && day.meals.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
+                    <Utensils className="w-4 h-4 text-accent" /> Diet Plan
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {day.meals.map((meal: any, i: number) => (
+                      <div key={i} className="glass-card p-5 rounded-2xl border border-white/5 group hover:border-accent/30 transition-all hover:bg-white/5" data-testid={`meal-${idx}-${i}`}>
+                        <div className="text-[10px] uppercase font-black tracking-widest text-accent mb-2">{meal.time}</div>
+                        <div className="font-display font-bold text-sm text-foreground leading-tight mb-2">{meal.name}</div>
+                        <div className="text-xs text-muted-foreground font-bold">{meal.calories} kcal</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Workout Grid */}
                 <div className="space-y-4">
                   <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Dumbbell className="w-4 h-4 text-secondary" /> Workout Workout
+                    <Dumbbell className="w-4 h-4 text-secondary" /> Workout Plan
                   </h3>
                   <div className="grid gap-3">
                     {day.workout.map((ex: any, i: number) => (

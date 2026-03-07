@@ -101,6 +101,13 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
                 "carbs": 220,
                 "fats": 65
               },
+              "meals": [
+                { "time": "Breakfast", "name": "Oatmeal with Banana & Whey Protein", "calories": 450 },
+                { "time": "Lunch", "name": "Grilled Chicken with Brown Rice & Broccoli", "calories": 650 },
+                { "time": "Snack", "name": "Greek Yogurt with Almonds", "calories": 250 },
+                { "time": "Dinner", "name": "Salmon with Sweet Potato & Spinach", "calories": 550 },
+                { "time": "Post-Workout", "name": "Protein Shake with Peanut Butter", "calories": 200 }
+              ],
               "challenges": ["10k Steps", "3L Water", "No Junk Food"]
             }
           ]
@@ -111,6 +118,8 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         - Vary intensity: High, Moderate, Recovery.
         - Match macros to intensity (higher carbs on High days).
         - Keep workout names concise.
+        - Include 4-5 meals per day with realistic food names and calorie estimates.
+        - Vary meals across days. Use healthy, practical foods.
       `;
 
       const content = await generatePlan(prompt);
