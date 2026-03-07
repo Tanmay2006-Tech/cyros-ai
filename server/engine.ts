@@ -1,11 +1,11 @@
 import OpenAI from "openai";
 
 let provider: "openrouter" | "gemini" | "none" = "none";
-let openaiClient: OpenAI | null = null;
+let routerClient: OpenAI | null = null;
 let geminiApiKey: string = "";
 
 if (process.env.OPENROUTER_API_KEY) {
-  openaiClient = new OpenAI({
+  routerClient = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: "https://openrouter.ai/api/v1",
   });
@@ -248,7 +248,7 @@ function generateRandomPlan(dietPref: string = "non_veg"): string {
 async function callOpenRouter(prompt: string, retries = 3, dietPref: string = "non_veg"): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await openaiClient!.chat.completions.create({
+      const response = await routerClient!.chat.completions.create({
         model: "google/gemini-2.0-flash-exp:free",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
