@@ -4,7 +4,7 @@ import {
   type User, type InsertUser, type UpdateUserRequest,
   type Plan, type InsertPlan,
   type Meal, type InsertMeal
-} from "@shared/schema";
+} from "../shared/schema";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
