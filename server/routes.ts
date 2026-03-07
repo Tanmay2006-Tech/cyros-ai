@@ -83,7 +83,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       const prompt = `
         You are an expert AI Diet & Fitness Planner for "Cyros AI", an elite fitness operating system.
         Create a personalized weekly plan for a user with these metrics:
-        Age: ${user.age}, Weight: ${user.weight}kg, Height: ${user.height}cm, Goal: ${user.goal}, Activity: ${user.activityLevel}
+        Age: ${user.age}, Weight: ${user.weight}kg, Height: ${user.height}cm, Goal: ${user.goal}, Activity: ${user.activityLevel}, Diet Preference: ${user.dietPreference || "non_veg"}
 
         Respond ONLY with a JSON object in this exact structure, no markdown, no text outside JSON:
         {
@@ -120,9 +120,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
         - Keep workout names concise.
         - Include 4-5 meals per day with realistic food names and calorie estimates.
         - Vary meals across days. Use healthy, practical foods.
+        - IMPORTANT: Diet preference is "${user.dietPreference || "non_veg"}". If "veg", use ONLY vegetarian meals (no meat, no fish, no eggs). If "vegan", use ONLY plant-based meals. If "eggetarian", vegetarian meals + eggs are allowed. If "non_veg", all foods including meat and fish are allowed.
       `;
 
-      const content = await generatePlan(prompt);
+      const content = await generatePlan(prompt, user.dietPreference || "non_veg");
 
       
       if (!content) {

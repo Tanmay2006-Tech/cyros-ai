@@ -22,6 +22,7 @@ export default function Profile() {
   const [height, setHeight] = React.useState("");
   const [goal, setGoal] = React.useState("maintain");
   const [activityLevel, setActivityLevel] = React.useState("moderate");
+  const [dietPreference, setDietPreference] = React.useState("non_veg");
 
   React.useEffect(() => {
     if (user) {
@@ -30,6 +31,7 @@ export default function Profile() {
       setHeight(user.height ? String(user.height) : "");
       setGoal(user.goal || "maintain");
       setActivityLevel(user.activityLevel || "moderate");
+      setDietPreference(user.dietPreference || "non_veg");
     }
   }, [user]);
 
@@ -54,6 +56,7 @@ export default function Profile() {
       height: Number(height),
       goal,
       activityLevel,
+      dietPreference,
     };
     try {
       const res = await fetch("/api/users/me", {
@@ -169,7 +172,7 @@ export default function Profile() {
                 </select>
               </div>
 
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Activity Level</label>
                 <select
                   value={activityLevel}
@@ -181,6 +184,21 @@ export default function Profile() {
                   <option value="light" className="bg-card">Lightly Active (Light exercise 1-3 days/week)</option>
                   <option value="moderate" className="bg-card">Moderately Active (Moderate exercise 3-5 days/week)</option>
                   <option value="active" className="bg-card">Very Active (Hard exercise 6-7 days/week)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Diet Preference</label>
+                <select
+                  value={dietPreference}
+                  onChange={(e) => setDietPreference(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
+                  data-testid="select-diet-preference"
+                >
+                  <option value="veg" className="bg-card">Vegetarian</option>
+                  <option value="non_veg" className="bg-card">Non-Vegetarian</option>
+                  <option value="vegan" className="bg-card">Vegan</option>
+                  <option value="eggetarian" className="bg-card">Eggetarian</option>
                 </select>
               </div>
             </div>

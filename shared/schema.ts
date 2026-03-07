@@ -12,6 +12,7 @@ export const users = pgTable("users", {
   height: integer("height"), // in cm
   goal: text("goal"), // "lose_weight", "build_muscle", "maintain"
   activityLevel: text("activity_level"), // "sedentary", "light", "moderate", "active"
+  dietPreference: text("diet_preference"), // "veg", "non_veg", "vegan", "eggetarian"
 });
 
 export const plans = pgTable("plans", {
