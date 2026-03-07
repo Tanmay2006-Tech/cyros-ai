@@ -112,7 +112,6 @@ export default function Home() {
               </p>
             </div>
             <div className="hidden md:flex flex-col items-end gap-2">
-              <LiveClock />
               <div className="flex items-center gap-2">
                 <Shield className={`w-4 h-4 ${tierColor}`} />
                 <span className={`text-xs font-black uppercase tracking-widest ${tierColor}`}>{tier} Tier</span>
