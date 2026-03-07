@@ -83,42 +83,47 @@ async function exportPlanToPdf(weekData: any[]) {
     y += 14;
 
     const diet = day.diet || {};
-    doc.setFontSize(8);
-    doc.setTextColor(168, 85, 247);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(100, 40, 180);
     doc.text("MACROS:", 14, y);
-    doc.setTextColor(180, 180, 180);
+    doc.setTextColor(30, 30, 30);
     doc.text(`Calories: ${diet.calories || 0} kcal  |  Protein: ${diet.protein || 0}g  |  Carbs: ${diet.carbs || 0}g  |  Fats: ${diet.fats || 0}g`, 38, y);
-    y += 8;
+    y += 10;
 
-    doc.setFontSize(8);
-    doc.setTextColor(34, 211, 238);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 130, 180);
     doc.text("WORKOUT:", 14, y);
-    y += 5;
+    y += 6;
 
     for (const ex of (day.workout || [])) {
-      doc.setTextColor(220, 220, 220);
+      doc.setTextColor(30, 30, 30);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.text(`  ${ex.name}`, 18, y);
-      doc.setTextColor(120, 120, 120);
+      doc.setTextColor(80, 80, 80);
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
       doc.text(`${ex.sets}  |  Rest: ${ex.rest}`, pageWidth - 14, y, { align: "right" });
       y += 6;
     }
 
     if (day.meals && day.meals.length > 0) {
-      y += 2;
+      y += 3;
       if (y > 240) { doc.addPage(); y = 20; }
-      doc.setFontSize(8);
-      doc.setTextColor(255, 165, 0);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(200, 100, 0);
       doc.text("DIET PLAN:", 14, y);
-      y += 5;
+      y += 6;
       for (const meal of day.meals) {
-        doc.setTextColor(220, 220, 220);
+        doc.setTextColor(30, 30, 30);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(9);
         doc.text(`  ${meal.time}: ${meal.name}`, 18, y);
-        doc.setTextColor(120, 120, 120);
+        doc.setTextColor(80, 80, 80);
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(8);
         doc.text(`${meal.calories} kcal`, pageWidth - 14, y, { align: "right" });
         y += 6;
@@ -126,12 +131,14 @@ async function exportPlanToPdf(weekData: any[]) {
     }
 
     if (day.challenges && day.challenges.length > 0) {
-      y += 2;
+      y += 3;
       if (y > 240) { doc.addPage(); y = 20; }
-      doc.setFontSize(8);
-      doc.setTextColor(168, 85, 247);
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(100, 40, 180);
       doc.text("CHALLENGES:", 14, y);
-      doc.setTextColor(160, 160, 160);
+      doc.setTextColor(50, 50, 50);
+      doc.setFont("helvetica", "normal");
       doc.text(day.challenges.join("  |  "), 48, y);
       y += 6;
     }
