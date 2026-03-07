@@ -1,13 +1,19 @@
 import { useLatestPlan } from "@/hooks/use-data";
 import { Layout } from "@/components/Layout";
-import { Dumbbell, Utensils, Target, ArrowRight, Flame, Zap, Droplets, Info, CheckCircle2, Award, Star, Download, Loader2 } from "lucide-react";
+import { Dumbbell, Utensils, Target, ArrowRight, Flame, Zap, Droplets, Info, Award, Star, Download, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
-import { MacroStats } from "@/components/plan/MacroStats";
-import { AccordionSection } from "@/components/plan/AccordionSection";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+
+const DAYS_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS_FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+function getCurrentDayIndex(): number {
+  const jsDay = new Date().getDay();
+  return jsDay === 0 ? 6 : jsDay - 1;
+}
 
 async function exportPlanToPdf(weekData: any[]) {
   const { jsPDF } = await import("jspdf");
@@ -128,6 +134,8 @@ export default function Plan() {
   const { data: plan, isLoading } = useLatestPlan();
   const [xp, setXp] = useState(0);
   const [exporting, setExporting] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(getCurrentDayIndex());
+  const sliderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const storedXp = localStorage.getItem("cyros_xp");
@@ -145,10 +153,10 @@ export default function Plan() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="animate-pulse space-y-6 mt-4 max-w-[1000px] mx-auto">
+        <div className="animate-pulse space-y-6 mt-4 max-w-[900px] mx-auto">
           <div className="h-10 bg-white/5 rounded-lg w-48 mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            {[1, 2, 3, 4].map(i => <div key={i} className="h-24 glass-card rounded-2xl"></div>)}
+          <div className="flex gap-2 mb-6">
+            {[1, 2, 3, 4, 5, 6, 7].map(i => <div key={i} className="h-12 w-16 glass-card rounded-xl"></div>)}
           </div>
           <div className="glass-card p-8 rounded-3xl h-64"></div>
         </div>
@@ -178,7 +186,6 @@ export default function Plan() {
     const parsed = JSON.parse(plan.dietPlan);
     weekData = Array.isArray(parsed) ? parsed : (parsed.week || []);
   } catch (e) {
-    // Fallback if the data is still in the old text format
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center h-[60vh] text-center max-w-md mx-auto">
@@ -195,145 +202,210 @@ export default function Plan() {
     );
   }
 
+  const day = weekData[selectedDay] || weekData[0];
+  if (!day) return null;
+
+  const todayIndex = getCurrentDayIndex();
+
   return (
     <Layout>
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="pb-20 max-w-[1000px] mx-auto"
+        className="pb-20 max-w-[900px] mx-auto"
       >
-        <header className="mb-12 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <header className="mb-8 mt-2 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-5xl font-display font-black text-gradient mb-2 uppercase italic tracking-tighter">Fitness & Diet Plan</h1>
-            <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-xs opacity-70">
-              Daily Tracking // Week 01 // XP: {xp}
+            <h1 className="text-4xl md:text-5xl font-display font-black text-gradient mb-1 uppercase italic tracking-tighter" data-testid="heading-plan">Fitness & Diet Plan</h1>
+            <p className="text-muted-foreground font-bold uppercase tracking-[0.3em] text-[10px] opacity-70">
+              Week 01 // XP: {xp}
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={async () => {
-                setExporting(true);
-                try { await exportPlanToPdf(weekData); } catch (e) { console.error("PDF export failed:", e); } finally { setExporting(false); }
-              }}
-              disabled={exporting || weekData.length === 0}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-foreground hover:bg-white/10 transition-all text-xs font-black uppercase tracking-widest"
-              data-testid="button-export-pdf"
-            >
-              {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              Export PDF
-            </button>
-            <div className="inline-flex items-center bg-primary/20 text-primary px-6 py-3 rounded-full text-xs font-black border border-primary/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] tracking-widest uppercase italic">
-              Active Plan
-            </div>
-          </div>
+          <button
+            onClick={async () => {
+              setExporting(true);
+              try { await exportPlanToPdf(weekData); } catch (e) { console.error("PDF export failed:", e); } finally { setExporting(false); }
+            }}
+            disabled={exporting || weekData.length === 0}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-foreground hover:bg-white/10 transition-all text-xs font-black uppercase tracking-widest self-start md:self-auto"
+            data-testid="button-export-pdf"
+          >
+            {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            Export PDF
+          </button>
         </header>
 
-        <div className="space-y-16">
-          {weekData.map((day: any, idx: number) => (
-            <section key={day.day} className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700" style={{ animationDelay: `${idx * 150}ms` }}>
-              <div className="flex items-center justify-between border-b border-white/5 pb-6">
-                <div className="flex items-center gap-6">
-                  <h2 className="text-4xl font-display font-black uppercase italic tracking-tighter text-foreground">{day.day}</h2>
-                  <Badge className={`px-4 py-1.5 uppercase font-black text-[10px] tracking-widest italic ${
-                    day.intensity === 'High' ? 'bg-red-500/20 text-red-500 border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]' :
-                    day.intensity === 'Moderate' ? 'bg-primary/20 text-primary border-primary/50 shadow-[0_0_15px_rgba(168,85,247,0.2)]' :
-                    'bg-secondary/20 text-secondary border-secondary/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]'
-                  }`}>
-                    {day.intensity} Intensity
-                  </Badge>
+        <div className="relative mb-8">
+          <div ref={sliderRef} className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide" data-testid="day-slider">
+            {weekData.map((_: any, idx: number) => {
+              const isSelected = idx === selectedDay;
+              const isToday = idx === todayIndex;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedDay(idx)}
+                  className={`relative flex-shrink-0 flex flex-col items-center gap-1 px-5 py-3 rounded-2xl transition-all duration-300 border ${
+                    isSelected
+                      ? "bg-primary/20 border-primary/60 shadow-[0_0_20px_rgba(168,85,247,0.25)]"
+                      : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.06] hover:border-white/10"
+                  }`}
+                  data-testid={`day-tab-${idx}`}
+                >
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
+                    {DAYS_SHORT[idx]}
+                  </span>
+                  <span className={`text-lg font-display font-black ${isSelected ? "text-foreground" : "text-foreground/50"}`}>
+                    {idx + 1}
+                  </span>
+                  {isToday && (
+                    <div className={`absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${isSelected ? "bg-primary" : "bg-emerald-400"}`} />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedDay}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-8"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setSelectedDay(Math.max(0, selectedDay - 1))}
+                  disabled={selectedDay === 0}
+                  className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+                  data-testid="button-prev-day"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-display font-black uppercase italic tracking-tighter text-foreground" data-testid="text-selected-day">{day.day}</h2>
                 </div>
+                <button
+                  onClick={() => setSelectedDay(Math.min(weekData.length - 1, selectedDay + 1))}
+                  disabled={selectedDay === weekData.length - 1}
+                  className="p-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+                  data-testid="button-next-day"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
+              <Badge className={`px-4 py-1.5 uppercase font-black text-[10px] tracking-widest italic ${
+                day.intensity === 'High' ? 'bg-red-500/20 text-red-500 border-red-500/50' :
+                day.intensity === 'Moderate' ? 'bg-primary/20 text-primary border-primary/50' :
+                'bg-secondary/20 text-secondary border-secondary/50'
+              }`} data-testid="badge-intensity">
+                {day.intensity}
+              </Badge>
+            </div>
 
-              {/* Macro Strip */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <MacroStats label="Energy" value={day.diet.calories} icon={Flame} color="var(--accent)" />
-                <MacroStats label="Protein" value={day.diet.protein} unit="g" icon={Zap} color="var(--secondary)" />
-                <MacroStats label="Carbs" value={day.diet.carbs} unit="g" icon={Droplets} color="var(--primary)" />
-                <MacroStats label="Fats" value={day.diet.fats} unit="g" icon={Info} color="#f97316" />
-              </div>
-
-              {/* Meals Section */}
-              {day.meals && day.meals.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Utensils className="w-4 h-4 text-accent" /> Diet Plan
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {day.meals.map((meal: any, i: number) => (
-                      <div key={i} className="glass-card p-5 rounded-2xl border border-white/5 group hover:border-accent/30 transition-all hover:bg-white/5" data-testid={`meal-${idx}-${i}`}>
-                        <div className="text-[10px] uppercase font-black tracking-widest text-accent mb-2">{meal.time}</div>
-                        <div className="font-display font-bold text-sm text-foreground leading-tight mb-2">{meal.name}</div>
-                        <div className="text-xs text-muted-foreground font-bold">{meal.calories} kcal</div>
-                      </div>
-                    ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { label: "Calories", value: day.diet.calories, unit: "kcal", icon: Flame, color: "text-accent" },
+                { label: "Protein", value: day.diet.protein, unit: "g", icon: Zap, color: "text-secondary" },
+                { label: "Carbs", value: day.diet.carbs, unit: "g", icon: Droplets, color: "text-primary" },
+                { label: "Fats", value: day.diet.fats, unit: "g", icon: Info, color: "text-orange-400" },
+              ].map((macro) => (
+                <div key={macro.label} className="glass-card rounded-2xl p-4 border border-white/5" data-testid={`macro-${macro.label.toLowerCase()}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <macro.icon className={`w-4 h-4 ${macro.color}`} />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{macro.label}</span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-display font-black text-foreground">{macro.value}</span>
+                    <span className="text-xs text-muted-foreground font-bold">{macro.unit}</span>
                   </div>
                 </div>
-              )}
+              ))}
+            </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Workout Grid */}
-                <div className="space-y-4">
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Dumbbell className="w-4 h-4 text-secondary" /> Workout Plan
-                  </h3>
-                  <div className="grid gap-3">
-                    {day.workout.map((ex: any, i: number) => (
-                      <div key={i} className="glass-card p-5 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-secondary/30 transition-all hover:bg-white/5">
+            {day.meals && day.meals.length > 0 && (
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
+                  <Utensils className="w-4 h-4 text-accent" /> Diet Plan
+                </h3>
+                <div className="glass-card rounded-2xl border border-white/5 divide-y divide-white/5 overflow-hidden">
+                  {day.meals.map((meal: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition-colors" data-testid={`meal-${selectedDay}-${i}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                          <Utensils className="w-4 h-4 text-accent" />
+                        </div>
                         <div>
-                          <div className="font-display font-black uppercase italic tracking-tight text-foreground group-hover:text-secondary transition-colors">{ex.name}</div>
-                          <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mt-0.5">ID: {idx}{i}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-display font-black italic tracking-tighter text-foreground">{ex.sets}</div>
-                          <div className="text-[9px] uppercase font-black text-secondary tracking-widest">Rest: {ex.rest}</div>
+                          <div className="text-[10px] uppercase font-black tracking-widest text-accent mb-0.5">{meal.time}</div>
+                          <div className="font-display font-bold text-sm text-foreground">{meal.name}</div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      <div className="text-sm font-black text-muted-foreground">{meal.calories} <span className="text-[10px]">kcal</span></div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+            )}
 
-                {/* Challenges & Progress */}
-                <div className="space-y-4">
-                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
-                    <Star className="w-4 h-4 text-primary" /> Daily Challenges
-                  </h3>
-                  <div className="glass-card p-8 rounded-[2rem] border border-white/5 space-y-6 h-full bg-gradient-to-br from-primary/5 to-transparent">
-                    {day.challenges.map((c: string, i: number) => (
-                      <div key={i} className="flex items-center space-x-4 group cursor-pointer">
-                        <Checkbox 
-                          id={`c-${idx}-${i}`} 
-                          className="w-6 h-6 rounded-lg border-primary/50 data-[state=checked]:bg-primary"
-                          onCheckedChange={(checked) => handleChallengeComplete(checked === true)}
-                        />
-                        <label 
-                          htmlFor={`c-${idx}-${i}`}
-                          className="text-sm font-display font-black uppercase italic tracking-tight text-foreground/80 group-hover:text-foreground transition-all cursor-pointer flex-1"
-                        >
-                          {c}
-                        </label>
-                        <Award className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
+                  <Dumbbell className="w-4 h-4 text-secondary" /> Workout Plan
+                </h3>
+                <div className="glass-card rounded-2xl border border-white/5 divide-y divide-white/5 overflow-hidden">
+                  {day.workout.map((ex: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between px-5 py-4 hover:bg-white/[0.03] transition-colors" data-testid={`workout-${i}`}>
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                          <Dumbbell className="w-4 h-4 text-secondary" />
+                        </div>
+                        <div className="font-display font-black uppercase italic tracking-tight text-foreground text-sm">{ex.name}</div>
                       </div>
-                    ))}
-                    <div className="pt-6 border-t border-white/5">
-                      <div className="flex justify-between text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-2">
-                        <span>Daily Sync</span>
-                        <span className="text-primary">Ready</span>
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-sm font-display font-black italic text-foreground">{ex.sets}</div>
+                        <div className="text-[9px] uppercase font-black text-secondary tracking-widest">Rest: {ex.rest}</div>
                       </div>
-                      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                        <motion.div 
-                          className="h-full bg-primary"
-                          initial={{ width: 0 }}
-                          animate={{ width: "40%" }}
-                        />
-                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2 mb-4">
+                  <Star className="w-4 h-4 text-primary" /> Daily Challenges
+                </h3>
+                <div className="glass-card rounded-2xl border border-white/5 p-5 space-y-4">
+                  {day.challenges.map((c: string, i: number) => (
+                    <div key={i} className="flex items-center space-x-3 group cursor-pointer" data-testid={`challenge-${i}`}>
+                      <Checkbox 
+                        id={`c-${selectedDay}-${i}`} 
+                        className="w-5 h-5 rounded-lg border-primary/50 data-[state=checked]:bg-primary flex-shrink-0"
+                        onCheckedChange={(checked) => handleChallengeComplete(checked === true)}
+                      />
+                      <label 
+                        htmlFor={`c-${selectedDay}-${i}`}
+                        className="text-sm font-display font-bold uppercase italic tracking-tight text-foreground/80 group-hover:text-foreground transition-all cursor-pointer flex-1"
+                      >
+                        {c}
+                      </label>
+                      <Award className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-all" />
+                    </div>
+                  ))}
+                  <div className="pt-4 border-t border-white/5 mt-4">
+                    <div className="flex justify-between text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-2">
+                      <span>+100 XP per challenge</span>
+                      <span className="text-primary">{xp} XP Total</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </section>
-          ))}
-        </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
     </Layout>
   );
