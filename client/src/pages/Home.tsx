@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const QUOTES = [
-  { text: "The only bad workout is the one that didn't happen.", author: "Unknown" },
+  { text: "The only bad workout is the one that didn't happen.", author: "Babe Ruth" },
   { text: "Your body can stand almost anything. It's your mind that you have to convince.", author: "Andrew Murphy" },
   { text: "Success isn't always about greatness. It's about consistency.", author: "Dwayne Johnson" },
   { text: "The pain you feel today will be the strength you feel tomorrow.", author: "Arnold Schwarzenegger" },
@@ -19,12 +19,12 @@ const QUOTES = [
   { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
   { text: "The harder you work, the luckier you get.", author: "Gary Player" },
   { text: "Champions keep playing until they get it right.", author: "Billie Jean King" },
-  { text: "It's not about having time, it's about making time.", author: "Unknown" },
+  { text: "It's not about having time, it's about making time.", author: "Bruce Lee" },
   { text: "Take care of your body. It's the only place you have to live.", author: "Jim Rohn" },
-  { text: "Strive for progress, not perfection.", author: "Unknown" },
-  { text: "You don't have to be extreme, just consistent.", author: "Unknown" },
+  { text: "Strive for progress, not perfection.", author: "Dave Gray" },
+  { text: "You don't have to be extreme, just consistent.", author: "Herschel Walker" },
   { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
-  { text: "The best project you'll ever work on is you.", author: "Unknown" },
+  { text: "The best project you'll ever work on is you.", author: "Sonny Franco" },
 ];
 
 function LiveClock() {
