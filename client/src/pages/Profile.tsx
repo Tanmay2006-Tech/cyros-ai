@@ -1,20 +1,37 @@
 import * as React from "react";
-import { useUser, useUpdateUser } from "@/hooks/use-users";
+import { useUser } from "@/hooks/use-users";
 import { useGeneratePlan } from "@/hooks/use-data";
 import { Layout } from "@/components/Layout";
 import { useToast } from "@/hooks/use-toast";
-import { FormEvent } from "react";
-import { Loader2, Sparkles, Activity } from "lucide-react";
+import { Loader2, Sparkles, Activity, Check } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Profile() {
   const { data: user, isLoading } = useUser();
-  const updateMutation = useUpdateUser();
   const generateMutation = useGeneratePlan();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isScanning, setIsScanning] = React.useState(false);
+  const [updateSuccess, setUpdateSuccess] = React.useState(false);
+  const [isUpdating, setIsUpdating] = React.useState(false);
+
+  const [age, setAge] = React.useState("");
+  const [weight, setWeight] = React.useState("");
+  const [height, setHeight] = React.useState("");
+  const [goal, setGoal] = React.useState("maintain");
+  const [activityLevel, setActivityLevel] = React.useState("moderate");
+
+  React.useEffect(() => {
+    if (user) {
+      setAge(user.age ? String(user.age) : "");
+      setWeight(user.weight ? String(user.weight) : "");
+      setHeight(user.height ? String(user.height) : "");
+      setGoal(user.goal || "maintain");
+      setActivityLevel(user.activityLevel || "moderate");
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -27,18 +44,16 @@ export default function Profile() {
     );
   }
 
-  const [updateSuccess, setUpdateSuccess] = React.useState(false);
-
-  async function handleUpdate(e: FormEvent<HTMLFormElement>) {
+  async function handleUpdate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setUpdateSuccess(false);
-    const fd = new FormData(e.currentTarget);
+    setIsUpdating(true);
     const data = {
-      age: Number(fd.get("age")),
-      weight: Number(fd.get("weight")),
-      height: Number(fd.get("height")),
-      goal: fd.get("goal") as string,
-      activityLevel: fd.get("activityLevel") as string,
+      age: Number(age),
+      weight: Number(weight),
+      height: Number(height),
+      goal,
+      activityLevel,
     };
     try {
       const res = await fetch("/api/users/me", {
@@ -50,6 +65,7 @@ export default function Profile() {
         const text = await res.text();
         throw new Error(text || "Failed to update profile");
       }
+      await queryClient.invalidateQueries({ queryKey: ["/api/users/me"] });
       setUpdateSuccess(true);
       setTimeout(() => setUpdateSuccess(false), 3000);
       toast({
@@ -62,17 +78,18 @@ export default function Profile() {
         description: err.message,
         variant: "destructive",
       });
+    } finally {
+      setIsUpdating(false);
     }
   }
 
   async function handleGeneratePlan() {
     setIsScanning(true);
     try {
-      // Artificial delay for "Scanning" effect
       await new Promise(resolve => setTimeout(resolve, 3000));
       await generateMutation.mutateAsync();
       toast({
-        title: "Plan Startd",
+        title: "Plan Started",
         description: "Your fitness plan has been synchronized.",
       });
       setLocation("/plan");
@@ -96,7 +113,7 @@ export default function Profile() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <form key={`${user?.age}-${user?.weight}-${user?.height}-${user?.goal}-${user?.activityLevel}`} onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden group" data-testid="form-profile">
+          <form onSubmit={handleUpdate} className="glass-card rounded-[2rem] p-6 md:p-8 space-y-6 relative overflow-hidden group" data-testid="form-profile">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-[80px] -z-10" />
             
@@ -104,43 +121,47 @@ export default function Profile() {
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Age (Years)</label>
                 <input
-                  name="age"
                   type="number"
-                  defaultValue={user?.age || ""}
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
                   required
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 28"
+                  data-testid="input-age"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Weight (kg)</label>
                 <input
-                  name="weight"
                   type="number"
-                  defaultValue={user?.weight || ""}
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
                   required
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 75"
+                  data-testid="input-weight"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Height (cm)</label>
                 <input
-                  name="height"
                   type="number"
-                  defaultValue={user?.height || ""}
+                  value={height}
+                  onChange={(e) => setHeight(e.target.value)}
                   required
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
                   placeholder="e.g. 180"
+                  data-testid="input-height"
                 />
               </div>
               
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Primary Goal</label>
                 <select
-                  name="goal"
-                  defaultValue={user?.goal || "maintain"}
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
+                  data-testid="select-goal"
                 >
                   <option value="lose_weight" className="bg-card">Lose Weight</option>
                   <option value="maintain" className="bg-card">Maintain Weight</option>
@@ -151,9 +172,10 @@ export default function Profile() {
               <div className="space-y-2 md:col-span-2">
                 <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Activity Level</label>
                 <select
-                  name="activityLevel"
-                  defaultValue={user?.activityLevel || "moderate"}
+                  value={activityLevel}
+                  onChange={(e) => setActivityLevel(e.target.value)}
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
+                  data-testid="select-activity"
                 >
                   <option value="sedentary" className="bg-card">Sedentary (Little or no exercise)</option>
                   <option value="light" className="bg-card">Lightly Active (Light exercise 1-3 days/week)</option>
@@ -165,6 +187,7 @@ export default function Profile() {
 
             <button
               type="submit"
+              disabled={isUpdating}
               className={`w-full py-4 rounded-xl font-black uppercase italic tracking-widest border transition-all duration-300 flex items-center justify-center gap-2 mt-4 ${
                 updateSuccess 
                   ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
@@ -172,7 +195,13 @@ export default function Profile() {
               }`}
               data-testid="button-update-metrics"
             >
-              {updateSuccess ? "Updated Successfully!" : "Update Metrics"}
+              {isUpdating ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : updateSuccess ? (
+                <><Check className="w-5 h-5" /> Updated Successfully!</>
+              ) : (
+                "Update Metrics"
+              )}
             </button>
           </form>
         </div>
@@ -226,8 +255,9 @@ export default function Profile() {
             
             <button
               onClick={handleGeneratePlan}
-              disabled={generateMutation.isPending || isScanning || !user?.weight}
+              disabled={generateMutation.isPending || isScanning || !weight}
               className="w-full py-4 rounded-xl font-black uppercase italic tracking-widest bg-gradient-to-r from-primary to-emerald-500 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              data-testid="button-create-plan"
             >
               {generateMutation.isPending || isScanning ? (
                 <>
@@ -237,7 +267,7 @@ export default function Profile() {
                 "Create Plan"
               )}
             </button>
-            {!user?.weight && (
+            {!weight && (
               <p className="text-[10px] text-accent mt-4 font-black uppercase tracking-widest animate-pulse">Metrics Required</p>
             )}
           </div>
