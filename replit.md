@@ -27,6 +27,19 @@ A cyberpunk-themed AI Diet & Fitness Planner web app built for a 4th-semester st
 - **Analytics** (`/progress`) — Charts and leaderboard
 - **Calculator** (`/calculator`) — BMI, BMR, TDEE, Water Intake, Protein Need, Body Fat % calculators
 
+## Diet Preference
+- Users can choose: Vegetarian, Non-Vegetarian, Vegan, Eggetarian
+- Stored in `users.dietPreference` column
+- AI prompt and fallback generator both filter meals based on preference
+
+## Vercel Deployment
+- `vercel.json` — routes config, rewrites API to serverless function
+- `api/index.ts` — Express app wrapped as Vercel serverless function
+- Build: `npm run build` outputs frontend to `dist/public`
+- Environment variables needed on Vercel: `DATABASE_URL`, `SESSION_SECRET`, `OPENROUTER_API_KEY`
+- Database: Use external PostgreSQL (Neon, Supabase, Railway)
+- Run `npx drizzle-kit push` against your external DB to set up tables
+
 ## Important Notes
 - User hardcoded as "Sachin" (id=1)
 - XP system stored in `localStorage` keys `cyros_xp` and `cyros_streak`
