@@ -11,6 +11,7 @@ import Plan from "./pages/Plan";
 import Nutrition from "./pages/Nutrition";
 import Challenges from "./pages/Challenges";
 import Progress from "./pages/Progress";
+import Calculator from "./pages/Calculator";
 
 function Router() {
   return (
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/nutrition" component={Nutrition} />
       <Route path="/challenges" component={Challenges} />
       <Route path="/progress" component={Progress} />
+      <Route path="/calculator" component={Calculator} />
       <Route component={NotFound} />
     </Switch>
   );

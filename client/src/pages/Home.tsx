@@ -2,16 +2,42 @@ import { useLatestPlan } from "@/hooks/use-data";
 import { useMeals } from "@/hooks/use-meals";
 import { useUser } from "@/hooks/use-users";
 import { Link } from "wouter";
-import { Flame, Target, ArrowRight, Activity, Plus, User as UserIcon } from "lucide-react";
+import { Flame, Target, ArrowRight, Activity, Plus, User as UserIcon, Quote, RefreshCw } from "lucide-react";
 import { HealthRing } from "@/components/HealthRing";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Layout } from "@/components/Layout";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+
+const QUOTES = [
+  { text: "The only bad workout is the one that didn't happen.", author: "Unknown" },
+  { text: "Your body can stand almost anything. It's your mind that you have to convince.", author: "Andrew Murphy" },
+  { text: "Success isn't always about greatness. It's about consistency.", author: "Dwayne Johnson" },
+  { text: "The pain you feel today will be the strength you feel tomorrow.", author: "Arnold Schwarzenegger" },
+  { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+  { text: "The harder you work, the luckier you get.", author: "Gary Player" },
+  { text: "Champions keep playing until they get it right.", author: "Billie Jean King" },
+  { text: "It's not about having time, it's about making time.", author: "Unknown" },
+  { text: "Take care of your body. It's the only place you have to live.", author: "Jim Rohn" },
+  { text: "Strive for progress, not perfection.", author: "Unknown" },
+  { text: "You don't have to be extreme, just consistent.", author: "Unknown" },
+  { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+  { text: "The best project you'll ever work on is you.", author: "Unknown" },
+];
 
 export default function Home() {
   const { data: user, isLoading: loadingUser } = useUser();
   const { data: plan, isLoading: loadingPlan } = useLatestPlan();
   const { data: meals, isLoading: loadingMeals } = useMeals();
+  
+  const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * QUOTES.length));
+  const quote = QUOTES[quoteIndex];
+  
+  function nextQuote() {
+    setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+  }
 
   if (loadingUser || loadingPlan || loadingMeals) {
     return (
@@ -182,6 +208,35 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="mt-8 glass-card rounded-[2rem] p-6 md:p-8 relative overflow-hidden group"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+        <div className="flex items-start gap-4 relative z-10">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
+            <Quote className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-lg md:text-xl font-display font-bold italic text-foreground leading-relaxed" data-testid="text-quote">
+              "{quote.text}"
+            </p>
+            <p className="text-sm text-muted-foreground mt-2 font-bold uppercase tracking-widest" data-testid="text-quote-author">
+              - {quote.author}
+            </p>
+          </div>
+          <button
+            onClick={nextQuote}
+            className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all flex-shrink-0"
+            data-testid="button-next-quote"
+          >
+            <RefreshCw className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+      </motion.div>
     </Layout>
   );
 }
