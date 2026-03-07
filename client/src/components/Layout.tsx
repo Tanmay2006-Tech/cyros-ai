@@ -20,8 +20,8 @@ export function Layout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row font-sans">
       {/* Sidebar (Desktop) */}
       <nav className="hidden md:flex flex-col w-72 bg-black/60 border-r border-white/5 p-6 gap-2 backdrop-blur-md">
-        <div className="mb-8 flex items-center justify-center">
-          <img src={cyrosLogo} alt="Cyros AI" className="w-full max-w-[220px] h-auto object-contain" data-testid="img-logo" />
+        <div className="mb-8 flex items-center justify-center bg-white/[0.04] rounded-2xl p-4 border border-white/[0.06]">
+          <img src={cyrosLogo} alt="Cyros AI" className="w-full max-w-[220px] h-auto object-contain brightness-150 contrast-125" data-testid="img-logo" />
         </div>
         
         <div className="space-y-2 flex-1">
