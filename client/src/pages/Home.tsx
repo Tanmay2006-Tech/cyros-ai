@@ -337,16 +337,6 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }} 
-          transition={{ delay: 0.6, duration: 0.5 }}
-          className="mt-6 text-center"
-        >
-          <p className="text-[9px] uppercase font-black tracking-[0.4em] text-muted-foreground/40">
-            Cyros.AI v2.0 // Powered by Artificial Intelligence
-          </p>
-        </motion.div>
       </motion.div>
     </Layout>
   );
