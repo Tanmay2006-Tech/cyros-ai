@@ -105,7 +105,7 @@ export default function Home() {
                 <span className="text-[10px] uppercase font-black tracking-[0.4em] text-emerald-400">System Online</span>
               </div>
               <h1 className="text-5xl md:text-7xl font-display font-black text-gradient mb-1 tracking-tighter italic uppercase" data-testid="text-greeting">
-                YO, Sachin
+                Welcome Back, Sachin
               </h1>
               <p className="text-sm text-muted-foreground font-medium mt-2">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
