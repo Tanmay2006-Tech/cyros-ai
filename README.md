@@ -1,87 +1,88 @@
 # Cyros AI - Diet & Fitness Planner
 
-A cyberpunk-themed AI-powered diet and fitness planning web application.
+A cyberpunk-themed diet and fitness planning web application built for a 4th-semester student exhibition.
 
 ## Tech Stack
 
-- **Frontend**: React + Vite + TailwindCSS + Framer Motion
+- **Frontend**: React 18 + Vite + TailwindCSS + Framer Motion
 - **Backend**: Node.js + Express 5
 - **Database**: PostgreSQL + Drizzle ORM
-- **AI**: Google Gemini 2.0 Flash (FREE)
+- **AI**: OpenRouter API (Google Gemini 2.0 Flash)
+- **UI**: shadcn/ui + Lucide Icons
+
+## Features
+
+- AI-powered weekly fitness & diet plan generation
+- Diet preference support (Veg / Non-Veg / Vegan / Eggetarian)
+- Macro tracking (Calories, Protein, Carbs, Fats)
+- Daily meal logging with nutrition breakdown
+- Health calculators (BMI, BMR, TDEE, Water Intake, Body Fat %)
+- XP gamification system with daily challenges
+- PDF export for generated plans
+- Cyberpunk UI with neon aesthetics
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) (v18 or later)
 - [PostgreSQL](https://www.postgresql.org/download/) (v14 or later)
+- [OpenRouter API Key](https://openrouter.ai/) (free)
 
 ## Setup
 
-### 1. Get a Free Gemini API Key
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file:
+   ```
+   DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
+   SESSION_SECRET=your_secret_key
+   OPENROUTER_API_KEY=your_openrouter_api_key
+   ```
+4. Push database schema:
+   ```bash
+   npm run db:push
+   ```
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+6. Open **http://localhost:5000**
 
-1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
-2. Sign in with your Google account
-3. Click **"Create API Key"**
-4. Copy the key
+## Deployment (Vercel)
 
-### 2. Create the Database
-
-Open pgAdmin or a terminal and create a new database:
-
-```sql
-CREATE DATABASE cyros_db;
-```
-
-### 3. Create Environment File
-
-Copy `.env.example` to `.env` and fill in your values:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your database credentials and Gemini API key:
-
-```
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
-SESSION_SECRET=cyros_super_secret
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-
-> The app works without an API key too — it will use sample fitness data instead.
-
-### 4. Install Dependencies
-
-```bash
-npm install
-```
-
-### 5. Push Database Schema
-
-```bash
-npm run db:push
-```
-
-### 6. Start the App
-
-```bash
-npm run dev
-```
-
-Open your browser at **http://localhost:5000**
+1. Push code to GitHub
+2. Import project on Vercel
+3. Set environment variables (`DATABASE_URL`, `SESSION_SECRET`, `OPENROUTER_API_KEY`)
+4. Use an external PostgreSQL provider (Neon, Supabase, Railway)
+5. Deploy
 
 ## Project Structure
 
 ```
-client/          - React frontend (Vite)
-server/          - Express backend
-shared/          - Shared types and schemas (Drizzle ORM)
-drizzle.config.ts
-package.json
-vite.config.ts
+client/src/          # React frontend
+  pages/             # Page components
+  components/        # Reusable UI components
+  hooks/             # Custom React hooks
+  lib/               # Utilities
+server/              # Express backend
+  engine.ts          # AI plan generation engine
+  routes.ts          # API endpoints
+  storage.ts         # Database operations
+  db.ts              # Database connection
+shared/              # Shared types and schemas
+  schema.ts          # Drizzle ORM schema
+  routes.ts          # API route definitions
+api/                 # Vercel serverless functions
 ```
 
 ## Troubleshooting
 
-- **White screen**: Delete the `node_modules/.vite` folder and restart.
-- **Database errors**: Make sure PostgreSQL is running and your DATABASE_URL is correct.
-- **Port conflict**: The app runs on port 5000 by default. Change PORT in your .env if needed.
+- **White screen**: Delete the `node_modules/.vite` folder and restart
+- **Database errors**: Make sure PostgreSQL is running and DATABASE_URL is correct
+- **Port conflict**: The app runs on port 5000 by default. Change PORT in .env if needed
+
+## Author
+
+Sachin

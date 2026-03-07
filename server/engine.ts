@@ -1,29 +1,22 @@
 import OpenAI from "openai";
 
-let provider: "openai" | "openrouter" | "gemini" | "none" = "none";
+let provider: "openrouter" | "gemini" | "none" = "none";
 let openaiClient: OpenAI | null = null;
 let geminiApiKey: string = "";
 
-if (process.env.AI_INTEGRATIONS_OPENAI_API_KEY && process.env.AI_INTEGRATIONS_OPENAI_BASE_URL) {
-  openaiClient = new OpenAI({
-    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-  });
-  provider = "openai";
-  console.log("AI Provider: OpenAI (GPT-4o)");
-} else if (process.env.OPENROUTER_API_KEY) {
+if (process.env.OPENROUTER_API_KEY) {
   openaiClient = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
     baseURL: "https://openrouter.ai/api/v1",
   });
   provider = "openrouter";
-  console.log("AI Provider: OpenRouter (Free models)");
+  console.log("AI Provider: OpenRouter");
 } else if (process.env.GEMINI_API_KEY) {
   geminiApiKey = process.env.GEMINI_API_KEY;
   provider = "gemini";
-  console.log("AI Provider: Google Gemini (2.0 Flash - Free)");
+  console.log("AI Provider: Google Gemini");
 } else {
-  console.warn("No AI API key found. Set OPENROUTER_API_KEY for free local use.");
+  console.warn("No AI API key found. Set OPENROUTER_API_KEY to enable AI plan generation.");
 }
 
 function pick<T>(arr: T[]): T {
@@ -325,34 +318,11 @@ async function callGemini(prompt: string, retries = 3, dietPref: string = "non_v
   return generateRandomPlan(dietPref);
 }
 
-async function callOpenAI(prompt: string, retries = 3, dietPref: string = "non_veg"): Promise<string> {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      const response = await openaiClient!.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
-      });
-      return response.choices[0]?.message?.content ?? generateRandomPlan(dietPref);
-    } catch (err: any) {
-      console.warn(`OpenAI attempt ${attempt}/${retries} failed:`, err?.status || err?.message);
-      if (attempt < retries) {
-        await new Promise(r => setTimeout(r, attempt * 5000));
-        continue;
-      }
-      return generateRandomPlan(dietPref);
-    }
-  }
-  return generateRandomPlan(dietPref);
-}
-
 export async function generatePlan(prompt: string, dietPref: string = "non_veg") {
   if (provider === "openrouter") {
     return callOpenRouter(prompt, 3, dietPref);
   } else if (provider === "gemini") {
     return callGemini(prompt, 3, dietPref);
-  } else if (provider === "openai") {
-    return callOpenAI(prompt, 3, dietPref);
   }
   return generateRandomPlan(dietPref);
 }
