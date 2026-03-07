@@ -1,88 +1,260 @@
-# Cyros AI - Diet & Fitness Planner
+Cyros AI
 
-A cyberpunk-themed diet and fitness planning web application built for a 4th-semester student exhibition.
+Cyros AI is a web-based prototype that generates personalized diet and fitness plans using generative AI.
 
-## Tech Stack
+The system takes user metrics such as age, weight, height, fitness goal, activity level, and dietary preference, and generates a structured 7-day plan including workouts, meals, and daily challenges tailored to the user.
 
-- **Frontend**: React 18 + Vite + TailwindCSS + Framer Motion
-- **Backend**: Node.js + Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **AI**: OpenRouter API (Google Gemini 2.0 Flash)
-- **UI**: shadcn/ui + Lucide Icons
+This project was developed as a 4th semester CSE exhibition prototype to demonstrate how generative AI can be integrated with a full-stack web application.
 
-## Features
+Live Demo
 
-- AI-powered weekly fitness & diet plan generation
-- Diet preference support (Veg / Non-Veg / Vegan / Eggetarian)
-- Macro tracking (Calories, Protein, Carbs, Fats)
-- Daily meal logging with nutrition breakdown
-- Health calculators (BMI, BMR, TDEE, Water Intake, Body Fat %)
-- XP gamification system with daily challenges
-- PDF export for generated plans
-- Cyberpunk UI with neon aesthetics
+https://cyros-ai.vercel.app
 
-## Prerequisites
+Features
+AI Plan Generation
 
-- [Node.js](https://nodejs.org/) (v18 or later)
-- [PostgreSQL](https://www.postgresql.org/download/) (v14 or later)
-- [OpenRouter API Key](https://openrouter.ai/) (free)
+Cyros AI generates a personalized 7-day workout and diet plan using Google Gemini AI via the OpenRouter API.
 
-## Setup
+Each plan includes:
 
+Daily workout routines
+
+Exercises with sets and rest periods
+
+4–5 meals per day
+
+Estimated calorie values
+
+Daily fitness challenges
+
+Diet Preference Support
+
+Users can generate plans based on dietary preference:
+
+Vegetarian
+
+Non-Vegetarian
+
+Vegan
+
+Eggetarian
+
+Nutrition Tracker
+
+Users can log meals and track their daily nutrition intake:
+
+Calories
+
+Protein
+
+Carbohydrates
+
+Fat
+
+Analytics Dashboard
+
+The analytics page visualizes nutrition trends using charts, including:
+
+Weekly calorie intake
+
+Protein consumption trends
+
+This helps users understand their progress and stay consistent with their plan.
+
+Gamification (Elite Zone)
+
+To increase engagement, the platform includes a gamification system.
+
+Users can:
+
+Complete daily challenges
+
+Earn XP points
+
+Maintain streaks
+
+Progress through tiers (Novice → Diamond)
+
+View leaderboard rankings
+
+PDF Export
+
+Users can download the generated weekly plan as a PDF file for offline reference.
+
+Responsive Design
+
+The interface is responsive and works on both desktop and mobile devices.
+
+Fail-Safe Mechanism
+
+If the AI API request fails, the system does not stop working.
+
+Instead, it switches to a fallback generator that uses predefined diet and workout datasets.
+
+The fallback system filters plans based on:
+
+diet preference
+
+fitness goal
+
+activity level
+
+This ensures the user always receives a valid plan even if the AI service is unavailable.
+
+Tech Stack
+Frontend
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+Framer Motion
+
+Backend
+
+Node.js
+
+Express
+
+Database
+
+PostgreSQL (Neon)
+
+AI Integration
+
+OpenRouter API
+
+Google Gemini 2.0 Flash
+
+ORM
+
+Drizzle ORM
+
+Charts
+
+Recharts
+
+Deployment
+
+Vercel (Serverless)
+
+System Architecture
+User
+ ↓
+React Frontend
+ ↓
+Express API
+ ↓
+Gemini AI (OpenRouter)
+ ↓
+PostgreSQL Database (Neon)
+
+If the AI request fails:
+
+Express API
+ ↓
+Fallback Generator
+ ↓
+Predefined Diet + Workout Dataset
+Database Schema
+
+The system uses three main tables.
+
+Users
+
+Stores user profile data.
+
+Fields include:
+
+username
+
+age
+
+weight
+
+height
+
+fitness goal
+
+activity level
+
+diet preference
+
+Plans
+
+Stores generated diet and workout plans.
+
+Fields include:
+
+user_id
+
+diet_plan (JSON)
+
+workout_plan (JSON)
+
+target calories
+
+target macros
+
+created_at
+
+Meals
+
+Stores logged meals for nutrition tracking.
+
+Fields include:
+
+meal name
+
+calories
+
+protein
+
+carbs
+
+fat
+
+timestamp
+
+Setup
 1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file:
-   ```
-   DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
-   SESSION_SECRET=your_secret_key
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   ```
-4. Push database schema:
-   ```bash
-   npm run db:push
-   ```
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
-6. Open **http://localhost:5000**
+git clone https://github.com/Tanmay2006-Tech/cyros-ai.git
+cd cyros-ai
+2. Install dependencies
+npm install
+3. Create a .env file
 
-## Deployment (Vercel)
+Create a .env file in the project root and add:
 
-1. Push code to GitHub
-2. Import project on Vercel
-3. Set environment variables (`DATABASE_URL`, `SESSION_SECRET`, `OPENROUTER_API_KEY`)
-4. Use an external PostgreSQL provider (Neon, Supabase, Railway)
-5. Deploy
+DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
+SESSION_SECRET=your_secret_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+4. Push the database schema
+npm run db:push
+5. Start the development server
+npm run dev
+6. Open the application
+http://localhost:5000
+Future Improvements
 
-## Project Structure
+Planned improvements for future versions include:
 
-```
-client/src/          # React frontend
-  pages/             # Page components
-  components/        # Reusable UI components
-  hooks/             # Custom React hooks
-  lib/               # Utilities
-server/              # Express backend
-  engine.ts          # AI plan generation engine
-  routes.ts          # API endpoints
-  storage.ts         # Database operations
-  db.ts              # Database connection
-shared/              # Shared types and schemas
-  schema.ts          # Drizzle ORM schema
-  routes.ts          # API route definitions
-api/                 # Vercel serverless functions
-```
+AI chatbot for fitness guidance
 
-## Troubleshooting
+Water intake tracking
 
-- **White screen**: Delete the `node_modules/.vite` folder and restart
-- **Database errors**: Make sure PostgreSQL is running and DATABASE_URL is correct
-- **Port conflict**: The app runs on port 5000 by default. Change PORT in .env if needed
+Workout rest timer
 
-## Author
+Progress photo tracking
 
-Sachin
+Weekly fitness reports
+
+Integration with wearable devices (Fitbit / Apple Watch)
+
+Exhibition
+
+This project was showcased at Smart Solutions Exhibition 2.0 under Category-I: Present a Project, organized during Ekatva – University Annual Fest 2026 by the Board of Professional Activities, Shri Mata Vaishno Devi University (SMVDU).
+
+The exhibition highlights innovative student projects that demonstrate practical applications of technology and problem-solving.
