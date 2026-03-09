@@ -9,9 +9,11 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+const isNeon = process.env.DATABASE_URL.includes("neon.tech");
+
 export const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL.includes("neon.tech") ? { rejectUnauthorized: false } : undefined,
+  ssl: isNeon ? { rejectUnauthorized: false } : false,
 });
 
 export const db = drizzle(pool, { schema });
