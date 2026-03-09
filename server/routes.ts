@@ -21,7 +21,9 @@ async function ensureSeedData() {
       weight: 75,
       height: 175,
       goal: "maintain",
-      activityLevel: "moderate"
+      activityLevel: "moderate",
+      gender: "male",
+      healthIssues: null
     });
 
     await storage.createPlan({
@@ -83,7 +85,7 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       const prompt = `
         You are an expert AI Diet & Fitness Planner for "Cyros AI", an elite fitness operating system.
         Create a personalized weekly plan for a user with these metrics:
-        Age: ${user.age}, Weight: ${user.weight}kg, Height: ${user.height}cm, Goal: ${user.goal}, Activity: ${user.activityLevel}, Diet Preference: ${user.dietPreference || "non_veg"}
+        Age: ${user.age}, Gender: ${user.gender || "not specified"}, Weight: ${user.weight}kg, Height: ${user.height}cm, Goal: ${user.goal}, Activity: ${user.activityLevel}, Diet Preference: ${user.dietPreference || "non_veg"}${user.healthIssues ? `, Health Considerations: ${user.healthIssues}` : ""}
 
         Respond ONLY with a JSON object in this exact structure, no markdown, no text outside JSON:
         {

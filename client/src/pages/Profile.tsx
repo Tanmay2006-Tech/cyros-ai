@@ -23,6 +23,8 @@ export default function Profile() {
   const [goal, setGoal] = React.useState("maintain");
   const [activityLevel, setActivityLevel] = React.useState("moderate");
   const [dietPreference, setDietPreference] = React.useState("non_veg");
+  const [gender, setGender] = React.useState("other");
+  const [healthIssues, setHealthIssues] = React.useState("");
 
   React.useEffect(() => {
     if (user) {
@@ -32,6 +34,8 @@ export default function Profile() {
       setGoal(user.goal || "maintain");
       setActivityLevel(user.activityLevel || "moderate");
       setDietPreference(user.dietPreference || "non_veg");
+      setGender(user.gender || "other");
+      setHealthIssues(user.healthIssues || "");
     }
   }, [user]);
 
@@ -57,6 +61,8 @@ export default function Profile() {
       goal,
       activityLevel,
       dietPreference,
+      gender,
+      healthIssues: healthIssues || null,
     };
     try {
       const res = await fetch("/api/users/me", {
@@ -200,6 +206,32 @@ export default function Profile() {
                   <option value="vegan" className="bg-card">Vegan</option>
                   <option value="eggetarian" className="bg-card">Eggetarian</option>
                 </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Gender</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all appearance-none font-bold"
+                  data-testid="select-gender"
+                >
+                  <option value="male" className="bg-card">Male</option>
+                  <option value="female" className="bg-card">Female</option>
+                  <option value="other" className="bg-card">Other</option>
+                </select>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Health Issues (Optional)</label>
+                <input
+                  type="text"
+                  value={healthIssues}
+                  onChange={(e) => setHealthIssues(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all font-bold"
+                  placeholder="e.g. back pain, asthma, diabetes"
+                  data-testid="input-health-issues"
+                />
               </div>
             </div>
 

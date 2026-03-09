@@ -13,6 +13,8 @@ export const users = pgTable("users", {
   goal: text("goal"), // "lose_weight", "build_muscle", "maintain"
   activityLevel: text("activity_level"), // "sedentary", "light", "moderate", "active"
   dietPreference: text("diet_preference"), // "veg", "non_veg", "vegan", "eggetarian"
+  gender: text("gender"), // "male", "female", "other"
+  healthIssues: text("health_issues"), // comma-separated or JSON list of health concerns
 });
 
 export const plans = pgTable("plans", {
