@@ -18,7 +18,7 @@ https://cyros-ai.vercel.app
 
 ### AI Plan Generation
 
-Cyros AI generates a personalized **7-day workout and diet plan** using **Google Gemini AI via the OpenRouter API**.
+Cyros AI generates a personalized **7-day workout and diet plan** using **Groq AI (Mixtral-8x7b)**, a free and fast language model.
 
 Each plan includes:
 
@@ -119,8 +119,8 @@ This ensures the user always receives a valid plan even if the AI service is una
 - PostgreSQL (Neon)
 
 ### AI Integration
-- OpenRouter API
-- Google Gemini 2.0 Flash
+- Groq API (Mixtral-8x7b)
+- Fallback: Google Gemini API
 
 ### ORM
 - Drizzle ORM
@@ -142,7 +142,7 @@ React Frontend
  ↓
 Express API
  ↓
-Gemini AI (OpenRouter)
+Groq AI (Mixtral-8x7b)
  ↓
 PostgreSQL Database (Neon)
 ```
@@ -231,7 +231,7 @@ Create a `.env` file in the project root and add:
 ```env
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/cyros_db
 SESSION_SECRET=your_secret_key
-OPENROUTER_API_KEY=your_openrouter_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
 
 ### 4. Push the database schema

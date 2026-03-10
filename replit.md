@@ -7,7 +7,7 @@ A full-stack AI-powered diet and fitness planner. Users enter their metrics and 
 - **Frontend**: React + Vite, served via Express in development using Vite middleware
 - **Backend**: Express.js (TypeScript, ESM)
 - **Database**: PostgreSQL via Drizzle ORM
-- **AI**: Supports OpenRouter API or Google Gemini API for plan generation; falls back to a randomized plan generator if no key is set
+- **AI**: Supports Groq API or Google Gemini API for plan generation; falls back to a randomized plan generator if no key is set
 - **Monorepo layout**: `client/` (frontend), `server/` (backend), `shared/` (schema + API types)
 
 ## Project Structure
@@ -17,7 +17,7 @@ client/          React frontend (Vite)
 server/
   index.ts       Express entry point (port 5000, 0.0.0.0)
   routes.ts      API route handlers
-  engine.ts      AI plan generation (OpenRouter / Gemini / fallback)
+  engine.ts      AI plan generation (Groq / Gemini / fallback)
   storage.ts     Database access layer
   db.ts          Drizzle + pg connection
   vite.ts        Vite dev middleware setup
@@ -38,7 +38,7 @@ shared/
 | Key | Required | Description |
 |-----|----------|-------------|
 | `DATABASE_URL` | Yes | PostgreSQL connection string (auto-set by Replit) |
-| `OPENROUTER_API_KEY` | No | Enables AI plan generation via OpenRouter |
+| `GROQ_API_KEY` | No | Enables AI plan generation via Groq (free, fast LLM) |
 | `GEMINI_API_KEY` | No | Enables AI plan generation via Google Gemini |
 | `SESSION_SECRET` | No | Session secret (optional if sessions added later) |
 
