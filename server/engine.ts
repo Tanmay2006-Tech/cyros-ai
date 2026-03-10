@@ -1,22 +1,22 @@
 import OpenAI from "openai";
 
-let provider: "openrouter" | "gemini" | "none" = "none";
-let routerClient: OpenAI | null = null;
+let provider: "groq" | "gemini" | "none" = "none";
+let groqClient: OpenAI | null = null;
 let geminiApiKey: string = "";
 
-if (process.env.OPENROUTER_API_KEY) {
-  routerClient = new OpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
+if (process.env.GROQ_API_KEY) {
+  groqClient = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1",
   });
-  provider = "openrouter";
-  console.log("AI Provider: OpenRouter");
+  provider = "groq";
+  console.log("AI Provider: Groq (Free LLM)");
 } else if (process.env.GEMINI_API_KEY) {
   geminiApiKey = process.env.GEMINI_API_KEY;
   provider = "gemini";
   console.log("AI Provider: Google Gemini");
 } else {
-  console.warn("No AI API key found. Set OPENROUTER_API_KEY to enable AI plan generation.");
+  console.warn("No AI API key found. Set GROQ_API_KEY to enable AI plan generation. Get free API key at https://console.groq.com");
 }
 
 function pick<T>(arr: T[]): T {
@@ -245,13 +245,14 @@ function generateRandomPlan(dietPref: string = "non_veg"): string {
   return JSON.stringify({ week });
 }
 
-async function callOpenRouter(prompt: string, retries = 3, dietPref: string = "non_veg"): Promise<string> {
+async function callGroq(prompt: string, retries = 3, dietPref: string = "non_veg"): Promise<string> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await routerClient!.chat.completions.create({
-        model: "google/gemini-2.0-flash-exp:free",
+      const response = await groqClient!.chat.completions.create({
+        model: "mixtral-8x7b-32768",
         messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
+        temperature: 0.3,
+        max_tokens: 2048,
       });
       const content = response.choices[0]?.message?.content;
       if (content) {
@@ -261,15 +262,15 @@ async function callOpenRouter(prompt: string, retries = 3, dietPref: string = "n
           return jsonMatch[0];
         }
       }
-      console.warn("OpenRouter response was not valid JSON.");
+      console.warn("Groq response was not valid JSON.");
       return generateRandomPlan(dietPref);
     } catch (err: any) {
-      console.warn(`OpenRouter attempt ${attempt}/${retries} failed:`, err?.message || err);
+      console.warn(`Groq attempt ${attempt}/${retries} failed:`, err?.message || err);
       if (attempt < retries) {
         await new Promise(r => setTimeout(r, attempt * 3000));
         continue;
       }
-      console.warn("All OpenRouter attempts failed. Using randomized fitness data.");
+      console.warn("All Groq attempts failed. Using randomized fitness data.");
       return generateRandomPlan(dietPref);
     }
   }
@@ -319,8 +320,8 @@ async function callGemini(prompt: string, retries = 3, dietPref: string = "non_v
 }
 
 export async function generatePlan(prompt: string, dietPref: string = "non_veg") {
-  if (provider === "openrouter") {
-    return callOpenRouter(prompt, 3, dietPref);
+  if (provider === "groq") {
+    return callGroq(prompt, 3, dietPref);
   } else if (provider === "gemini") {
     return callGemini(prompt, 3, dietPref);
   }

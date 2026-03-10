@@ -52,16 +52,16 @@ const pool = new pg.Pool({
 });
 const db = drizzle(pool, { schema: { users, plans, meals } });
 
-let routerClient: OpenAI | null = null;
+let groqClient: OpenAI | null = null;
 let geminiApiKey = "";
-let aiProvider: "openrouter" | "gemini" | "none" = "none";
+let aiProvider: "groq" | "gemini" | "none" = "none";
 
-if (process.env.OPENROUTER_API_KEY) {
-  routerClient = new OpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: "https://openrouter.ai/api/v1",
+if (process.env.GROQ_API_KEY) {
+  groqClient = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1",
   });
-  aiProvider = "openrouter";
+  aiProvider = "groq";
 } else if (process.env.GEMINI_API_KEY) {
   geminiApiKey = process.env.GEMINI_API_KEY;
   aiProvider = "gemini";
@@ -219,13 +219,14 @@ function generateRandomPlan(dietPref: string = "non_veg"): string {
 }
 
 async function callAI(prompt: string, dietPref: string): Promise<string> {
-  if (aiProvider === "openrouter" && routerClient) {
+  if (aiProvider === "groq" && groqClient) {
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        const response = await routerClient.chat.completions.create({
-          model: "google/gemini-2.0-flash-exp:free",
+        const response = await groqClient.chat.completions.create({
+          model: "mixtral-8x7b-32768",
           messages: [{ role: "user", content: prompt }],
-          response_format: { type: "json_object" },
+          temperature: 0.3,
+          max_tokens: 2048,
         });
         const content = response.choices[0]?.message?.content;
         if (content) {
