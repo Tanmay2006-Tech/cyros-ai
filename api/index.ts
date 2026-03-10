@@ -225,18 +225,46 @@ async function callAI(prompt: string, dietPref: string): Promise<string> {
         const response = await groqClient.chat.completions.create({
           model: "llama-3.3-70b-versatile",
           messages: [{ role: "user", content: prompt }],
-          temperature: 0.3,
-          max_tokens: 2048,
+          temperature: 0.1,
+          max_tokens: 3500,
         });
         const content = response.choices[0]?.message?.content;
         if (content) {
-          const jsonMatch = content.match(/\{[\s\S]*\}/);
-          if (jsonMatch) { JSON.parse(jsonMatch[0]); return jsonMatch[0]; }
+          // Clean up the response - remove markdown code blocks
+          let cleaned = content
+            .replace(/```json\n?/g, '')
+            .replace(/```\n?/g, '')
+            .trim();
+          
+          // Find the first { and last } to extract JSON
+          const startIdx = cleaned.indexOf('{');
+          const lastIdx = cleaned.lastIndexOf('}');
+          
+          if (startIdx !== -1 && lastIdx > startIdx) {
+            let jsonStr = cleaned.substring(startIdx, lastIdx + 1);
+            
+            // Try to parse and validate
+            try {
+              JSON.parse(jsonStr);
+              return jsonStr;
+            } catch {
+              console.warn(`[v0] JSON parsing failed on attempt ${attempt}, retrying...`);
+              // If parsing fails, try cleaning common issues
+              jsonStr = jsonStr
+                .replace(/,\s*]/g, ']') // Remove trailing commas in arrays
+                .replace(/,\s*}/g, '}') // Remove trailing commas in objects
+                .replace(/:\s*,/g, ': null,') // Handle missing values
+                .replace(/\n/g, ' '); // Remove newlines that might break JSON
+              
+              JSON.parse(jsonStr); // Validate again
+              return jsonStr;
+            }
+          }
         }
-        return generateRandomPlan(dietPref);
+        console.warn(`[v0] Groq attempt ${attempt}: No valid JSON found in response`);
       } catch (err: any) {
         if (attempt === 3) return generateRandomPlan(dietPref);
-        await new Promise((r) => setTimeout(r, attempt * 3000));
+        await new Promise((r) => setTimeout(r, attempt * 2000));
       }
     }
   } else if (aiProvider === "gemini") {
